@@ -14,11 +14,13 @@ void initSpi();
 
 void sendByte(unsigned char byte, unsigned char single);
 
-void sendByteL(unsigned char byte, unsigned char single, unsigned char level);
+void sendByteL(unsigned char byte, unsigned char single, unsigned int level);
 
-void sendLevel(unsigned char byte[], unsigned char level);
+void sendLevel(unsigned char byte[8], unsigned int level);
 
-void sendFrame(unsigned char[][]);
+void sendFrame(unsigned char byte[8][8]);
+
+void selectLevel(unsigned int level);
 
 
 #endif	/* FUNCTIONS_H */

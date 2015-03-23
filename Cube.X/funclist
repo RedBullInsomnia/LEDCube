@@ -1,10 +1,5 @@
-_OpenSPI: CODE, 270 0 86
-_main: CODE, 356 0 62
-_high_isr: CODE, 132 0 138
-_blinky: CODE, 8 0 124
-__initialization: CODE, 478 0 2
-_sendByte: CODE, 442 0 20
-_Delay100TCYx: CODE, 462 0 16
-_WriteSPI: CODE, 418 0 24
+_main: CODE, 280 0 4
+_high_isr: CODE, 8 0 262
+__initialization: CODE, 270 0 0
 _low_isr: CODE, 24 0 138
-Total: 610
+Total: 404

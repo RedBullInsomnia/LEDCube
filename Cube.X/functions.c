@@ -39,33 +39,63 @@ void sendByte(unsigned char byte, unsigned char single)
     }
 }
 
-void sendByteL(unsigned char byte, unsigned char single, unsigned char level)
+void sendByteL(unsigned char byte, unsigned char single, unsigned int level)
 {
     PORTD = 0;
     sendByte(byte, single);
-    PORTD = level;
+    selectLevel(level);
 }
 
-void sendLevel(unsigned char byte[], unsigned char level)
+void sendLevel(unsigned char byte[8], unsigned int level)
 {
-    PORTD = 0; //disable all levels
+    PORTD = 0x0; //disable all levels
 
     for (int i = 0; i < 8; i++)
-        sendByte(byte[i], 0) //send 8 bytes
+        sendByte(byte[i], 0); //send 8 bytes
 
     // Latch and activate
-    PORTD = level;
+    selectLevel(level);
     PORTEbits.RE1 = 1; // LE high
     PORTEbits.RE1 = 0; // LE low; to activate latch
     PORTEbits.RE0 = 0; // enable output
 }
 
-void sendFrame(unsigned char byte[][])
+void sendFrame(unsigned char byte[8][8])
 {
-    unsigned char level = 0x00000001;
+    unsigned int level = 1;
     for (int i = 0; i < 8; i++)
     {
-        sendLevel(byte[i], level)
-        level *= 2;
+        sendLevel(byte[i], level);
+        level = level*2;
+    }
+}
+
+void selectLevel(unsigned int level)
+{
+    switch(level)
+    {
+        case 1 : LATD &= 0b00000001;
+        break;
+
+        case 2 : LATD &= 0b00000010;
+        break;
+
+        case 3 : LATD &= 0b00000100;
+        break;
+
+        case 4 : LATD &= 0b00001000;
+        break;
+
+        case 5 : LATD &= 0b00010000;
+        break;
+
+        case 6 : LATD &= 0b00100000;
+        break;
+
+        case 7 : LATD &= 0b01000000;
+        break;
+
+        case 8 : LATD &= 0b10000000;
+        break;
     }
 }
