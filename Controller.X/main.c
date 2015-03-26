@@ -164,10 +164,7 @@ void main(void)
         measured_voltage = (float)ADRESL + (float)ADRESH * 256.0;
         measured_voltage = measured_voltage * 5.0 / 1023.0;
 
-        if(error > 1)
-            setLight(1);
-        else
-            clearLight(1);
+
         /*
         if(tension>=2.0 && tension<=2.5)
             setLight(1);
@@ -246,11 +243,11 @@ void interrupt Timer0_ISR()
         // Regarder le bit GO/DONE
 
         error = reference - measured_voltage;
-        output = kp*(error - previous_error) + ki*Ts*0.5*(error + previous_error) + previous_output;
+        output = kp*(error );//- previous_error) + ki*Ts*0.5*(error + previous_error) + previous_output;
         previous_error = error;
         previous_output = output;
 
-        setDuty(output/5.0);
+        setDuty(output);///5.0);
 
         cnt_update_duty = 0;
     }
