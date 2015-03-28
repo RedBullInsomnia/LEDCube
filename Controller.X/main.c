@@ -28,7 +28,7 @@
 #define _XTAL_FREQ 20000000
 #pragma config OSC      = HS   // Internal oscillator block, digital I/O on RA6 and RA7
 //#pragma config OSC      = INTIO67   // Internal oscillator block, digital I/O on RA6 and RA7
-#pragma config MCLRE    = OFF       // Disable the reset function --------------------------------------------------------------------
+#pragma config MCLRE    = ON      // Disable the reset function --------------------------------------------------------------------
 #pragma config FCMEN    = OFF       // Fail-Safe Clock Monitor Enable bit
 #pragma config IESO     = OFF       // Internal/External Oscillator Switchover bit
 #pragma config PWRT     = ON        // Power-up Timer Enable bit
@@ -69,6 +69,7 @@ void delayzz();
 void setLight(int number);
 void clearLight(int number);
 void setDuty(float duty);
+void reset_controller(void);
 void interrupt Timer0_ISR(void);
 
 
@@ -91,6 +92,9 @@ void main(void)
 {
 
     TRISC = 0b11101111 ;      // PORT C Setting: Set pin 4 in port C to Output
+
+    // Activation of the reset by MCLRE voir les pragma
+
 
     // Step 1: Configure the A/D module
     ADCON1 = 0b00001110; // Pour Vref+ = VDD et Vref_ = VSS et pour configurer uniquement AN0 en analogique. Les autres restent I/O digital.
@@ -116,6 +120,7 @@ void main(void)
     T2CKPS1 = 0;    // Prescaler value - High bit
     T2CKPS0 = 0;    // Prescaler value - Low bit
 
+
     // 5th step - CCPM module for PWM operation
     CCP2M3 = 1;
     CCP2M2 = 1;
@@ -123,28 +128,13 @@ void main(void)
     CCP2M0 = 0;
 
     // Start the cube by progresivly increasing the duty cyle
-    setDuty(0.2);
-    delayzz();
-    setDuty(0.4);
-    delayzz();
-    setDuty(0.54);
-    delayzz();
-
-    // Switch on the diode during 3 seconds to see that the PWM is at 54%
-    setLight(1);
-    delayzz();
-    delayzz();
-    delayzz();
-    clearLight(1);
-    delayzz();
+    reset_controller();
 
     // configure the timer 0
     T0CON = 0b11011000; // activate the timer0 with the right parameters
     TMR0IE = 1; //enable TMR0 overflow interrupts (voir INTCON PDF page 113)
     GIE = 1; //enable Global interrupts
     TMR0IF = 0; // clear the interrupt flag at the begining
-
-    
 
     while(1)
     {
@@ -153,6 +143,12 @@ void main(void)
         delayzz();
         clearLight(1);
         delayzz();*/
+
+        // MCLR == 1 if we put the MCLR pin to GND
+        // !!! Not forget to put a pull up resistor with pin MCLR !!!
+        if(MCLR == 1){
+            reset_controller();
+        }
 
         // Step 4: Start conversion
         ADCON0 = 0b00000011; // Go
@@ -228,6 +224,24 @@ void setDuty(float duty)
     
 }
 
+/** Function who resets the controller*/
+void reset_controller(){
+    // Start the cube by progresivly increasing the duty cyle
+    setDuty(0.2);
+    delayzz();
+    setDuty(0.4);
+    delayzz();
+    setDuty(0.54);
+    delayzz();
+
+    // Switch on the diode during 3 seconds to see that the PWM is at 54%
+    setLight(1);
+    delayzz();
+    delayzz();
+    delayzz();
+    clearLight(1);
+    delayzz();
+}
 
 void interrupt Timer0_ISR() 
 {
