@@ -146,7 +146,7 @@ void main(void)
 
         // MCLR == 1 if we put the MCLR pin to GND
         // !!! Not forget to put a pull up resistor with pin MCLR !!!
-        if(MCLR == 1){
+        if(MCLR == 0b0){
             reset_controller();
         }
 
@@ -229,13 +229,18 @@ void reset_controller(){
     // Start the cube by progresivly increasing the duty cyle
     setDuty(0.2);
     delayzz();
+    delayzz();
     setDuty(0.4);
     delayzz();
+    delayzz();
     setDuty(0.54);
+    delayzz();
     delayzz();
 
     // Switch on the diode during 3 seconds to see that the PWM is at 54%
     setLight(1);
+    delayzz();
+    delayzz();
     delayzz();
     delayzz();
     delayzz();
