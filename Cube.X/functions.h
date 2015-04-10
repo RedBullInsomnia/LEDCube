@@ -12,6 +12,8 @@ void init();
 
 void initSpi();
 
+void clearCube();
+
 void sendByte(unsigned char byte, unsigned char single);
 
 void sendByteL(unsigned char byte, unsigned char single, unsigned int level);
