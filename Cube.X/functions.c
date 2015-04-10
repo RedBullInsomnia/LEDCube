@@ -24,6 +24,17 @@ void initSpi()
     OpenSPI(SPI_FOSC_64, MODE_00, SMPMID);
 }
 
+void clearCube()
+{
+    for (uint8_t i = 0; i < 8; i++)
+    {
+		for (uint8_t j = 0; j < 8; j++)
+		{
+			cube[i][j] = 0;
+		}
+	}
+}
+
 void sendByte(unsigned char byte, unsigned char single)
 {
     PORTEbits.RE0 = 1; // disable output
