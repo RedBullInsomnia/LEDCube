@@ -64,13 +64,13 @@
 
 
 /* Functions declaration */
-void delayzz();
-
-void setLight(int number);
-void clearLight(int number);
 void setDuty(float duty);
 void reset_controller(void);
 void interrupt Timer0_ISR(void);
+
+void delayzz();
+void setLight(int number);
+void clearLight(int number);
 
 
 /* ************* Global variables because in interrupt ************* */
@@ -87,21 +87,17 @@ float output;
 float kp = 0.1819,ki = 10;//10.3902;
 float Ts = 0.000332;
 
-/* ****************** MAIN ****************** */
+/* ******************************* MAIN ************************************* */
 void main(void)
 {
-
-    TRISC = 0b11101111 ;      // PORT C Setting: Set pin 4 in port C to Output
-
-    // Activation of the reset by MCLRE voir les pragma
-
+    // PORT C Setting: Set pin 4 in port C to Output
+    TRISC = 0b11101111 ;
 
     // Step 1: Configure the A/D module
     ADCON1 = 0b00001110; // Pour Vref+ = VDD et Vref_ = VSS et pour configurer uniquement AN0 en analogique. Les autres restent I/O digital.
     ADCON0 = 0b00000000; // Pour activer le channel 0
     ADCON2 = 0b10010101; // Acquisition time = 4Tad; Conversion clock = Fosc / 16
     ADCON0 = 0b00000001; // Conversion module is enabled
-
 
     // Config for PWM
     // 1st step - configure the frequency 
@@ -120,7 +116,6 @@ void main(void)
     T2CKPS1 = 0;    // Prescaler value - High bit
     T2CKPS0 = 0;    // Prescaler value - Low bit
 
-
     // 5th step - CCPM module for PWM operation
     CCP2M3 = 1;
     CCP2M2 = 1;
@@ -138,20 +133,17 @@ void main(void)
     GIE = 1; //enable Global interrupts
     TMR0IF = 0; // clear the interrupt flag at the begining
 
+
     while(1)
     {
-        /*// Blinky
-        setLight(1);
-        delayzz();
-        clearLight(1);
-        delayzz();*/
-
+        /*
         // MCLR == 1 if we put the MCLR pin to GND
         // !!! Not forget to put a pull up resistor with pin MCLR !!!
-        //if(MCLR == 0b0){
-        //    reset_controller();
-        //}
-
+        if(MCLR == 0b0){
+            reset_controller();
+        }
+        */
+        
         // Step 4: Start conversion
         ADCON0 = 0b00000011; // Go
 
@@ -161,36 +153,9 @@ void main(void)
         // Step 6: Read A/D result registers
         measured_voltage = (float)ADRESL + (float)ADRESH * 256.0;
         //measured_voltage = measured_voltage * 5.0 / 1024.0;
-
-
-        /*
-        if(tension>=2.0 && tension<=2.5)
-            setLight(1);
-        else
-            clearLight(1);
-        */
-
     }
 }
 
-/*  ***************  TIMER *************** */
-void delayzz()
-{
-    for(int i=0; i<100 ; ++i)
-        __delay_ms(10);
-}
-
-void setLight(int number)
-{
-    if(number==1)
-        PORTCbits.RC4 = 1;   // RC-4 to High
-}
-
-void clearLight(int number)
-{
-    if(number==1)
-        PORTCbits.RC4 = 0;   // RC-4 to Low
-}
 
 void setDuty(float duty)
 {
@@ -216,7 +181,6 @@ void setDuty(float duty)
     //cpp = (int)//(_XTAL_FREQ / freq_duty);
     
     cpp = duty;
-
     CCPR2L = cpp;
 
     /*
@@ -301,4 +265,25 @@ void interrupt Timer0_ISR()
 
     }
 
+}
+
+
+// ---------------------------------------------------------------------------
+
+void delayzz()
+{
+    for(int i=0; i<100 ; ++i)
+        __delay_ms(10);
+}
+
+void setLight(int number)
+{
+    if(number==1)
+        PORTCbits.RC4 = 1;   // RC-4 to High
+}
+
+void clearLight(int number)
+{
+    if(number==1)
+        PORTCbits.RC4 = 0;   // RC-4 to Low
 }
