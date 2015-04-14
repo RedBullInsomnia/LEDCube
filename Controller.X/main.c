@@ -81,10 +81,10 @@ float previous_output = 0;
 float previous_error = 0;
 float error = 0;
 float integral = 0;
-float reference = 3.72;     // Referenve voltage (after sensor gain)
-//float dt = 0.00033;         // Sampling period: 20ms
+float reference = 3.72 * 1024.0 /5.0;     // Referenve voltage (after sensor gain)
+float dt = 0.001024;         // Sampling period: 20ms
 float output;
-float kp = 0.1819,ki = 10.3902;
+float kp = 0.1819,ki = 10;//10.3902;
 float Ts = 0.000332;
 
 /* ****************** MAIN ****************** */
@@ -128,10 +128,12 @@ void main(void)
     CCP2M0 = 0;
 
     // Start the cube by progresivly increasing the duty cyle
-    reset_controller();
+    //reset_controller();
 
     // configure the timer 0
-    T0CON = 0b11011000; // activate the timer0 with the right parameters
+    T0CON = 0b10011000; // activate the timer0 with the right parameters
+    TMR0L = 0x4E;
+    TMR0H = 0xEC;
     TMR0IE = 1; //enable TMR0 overflow interrupts (voir INTCON PDF page 113)
     GIE = 1; //enable Global interrupts
     TMR0IF = 0; // clear the interrupt flag at the begining
@@ -146,9 +148,9 @@ void main(void)
 
         // MCLR == 1 if we put the MCLR pin to GND
         // !!! Not forget to put a pull up resistor with pin MCLR !!!
-        if(MCLR == 0b0){
-            reset_controller();
-        }
+        //if(MCLR == 0b0){
+        //    reset_controller();
+        //}
 
         // Step 4: Start conversion
         ADCON0 = 0b00000011; // Go
@@ -158,7 +160,7 @@ void main(void)
 
         // Step 6: Read A/D result registers
         measured_voltage = (float)ADRESL + (float)ADRESH * 256.0;
-        measured_voltage = measured_voltage * 5.0 / 1023.0;
+        //measured_voltage = measured_voltage * 5.0 / 1024.0;
 
 
         /*
@@ -192,24 +194,34 @@ void clearLight(int number)
 
 void setDuty(float duty)
 {
-    float freq_duty;
+    //float freq_duty;
     int cpp;
 
-    if(duty<0.1)
+    if(duty<16.6)
     {
-        duty = 0.1;
-        //setLight(1);
+        duty = 16.6;
+        //clearLight(1);
     }
-    else if(duty>0.9)
+    else if(duty>116)
     {
-        duty = 0.9;
-        //setLight(1);
+        duty = 116;
+        //clearLight(1);
     }
+    //else
+        //setLight(1);
 
-    freq_duty = (1/duty) * 30000;
-    cpp = (int)(_XTAL_FREQ / freq_duty);
+    //duty = 0.54; // <--------------------------------------------------------------------------------------- HERE !!!!
 
+    //freq_duty = (1/duty) * 30000;
+    //cpp = (int)//(_XTAL_FREQ / freq_duty);
+    
+    cpp = duty;
+
+    CCPR2L = cpp;
+
+    /*
     CCPR2L = cpp >> 2;                  // High bits
+
 
     if (cpp & 1)
         CCP2CON = CCP2CON & 0b11101111; // Low low bit
@@ -220,21 +232,18 @@ void setDuty(float duty)
         CCP2CON = CCP2CON | 0b00100000; // Low bit
     else
         CCP2CON = CCP2CON & 0b11011111; // Low bit
-
+        */
     
 }
 
 /** Function who resets the controller*/
 void reset_controller(){
     // Start the cube by progresivly increasing the duty cyle
-    setDuty(0.2);
+    setDuty(20);
     delayzz();
+    setDuty(50);
     delayzz();
-    setDuty(0.4);
-    delayzz();
-    delayzz();
-    setDuty(0.54);
-    delayzz();
+    setDuty(80);
     delayzz();
 
     // Switch on the diode during 3 seconds to see that the PWM is at 54%
@@ -242,33 +251,54 @@ void reset_controller(){
     delayzz();
     delayzz();
     delayzz();
-    delayzz();
-    delayzz();
     clearLight(1);
-    delayzz();
 }
 
 void interrupt Timer0_ISR() 
 {
     if (TMR0IE && TMR0IF) //are TMR0 interrupts enabled and is the TMR0 interrupt flag set?
     {
+        TMR0L = 0x4E;
+        TMR0H = 0xEC;
         TMR0IF=0; //TMR0 interrupt flag must be cleared in software to allow subsequent interrupts increment the counter variable by 1
-    }
-    ++cnt_update_duty;
-    if (cnt_update_duty == 1) // On a fait 7 interruption (commence à 0)
-    {
-         //On prend la dernière valeur de l'AD de la v_out et on calcule le nouveau D
+
+   
+    //++cnt_update_duty;
+    //if (cnt_update_duty == 7) // On a fait 7 interruption (commence à 0)
+    //{
+        
+        //setLight(1);
+        //PORTCbits.RC4 =~ PORTCbits.RC4;
+
+        //On prend la dernière valeur de l'AD de la v_out et on calcule le nouveau D
         // Controller PI A changer ici
         // Regarder le bit GO/DONE
-
         error = reference - measured_voltage;
-        output = kp*(error );//- previous_error) + ki*Ts*0.5*(error + previous_error) + previous_output;
-        previous_error = error;
-        previous_output = output;
+        //output = kp*(error - previous_error) + ki*dt*0.5*(error + previous_error) + previous_output;
+        //previous_error = error;
+        //previous_output = output;
+        
+        
+        integral = integral + error*dt;
+        //if(integral >= 757760 || integral <= -757760) //  = 3.7*1000*1024/5
+        //{
+            //integral = integral - error*dt;
+            //setLight(1);
+        //}
+        //else
+            //clearLight(1);
+        
+        output = kp*(error) + ki*integral;
+        
 
         setDuty(output);///5.0);
+        
+        // cnt_update_duty = 0;
+        
+        //clearLight(1);
+        //PORTCbits.RC4 =~ PORTCbits.RC4;
+    //}
 
-        cnt_update_duty = 0;
     }
 
 }
