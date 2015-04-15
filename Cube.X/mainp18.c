@@ -18,7 +18,7 @@ void main(void) {
 
     for(;;)
     {
-        if ()
+        ;
     }
     return;
 }

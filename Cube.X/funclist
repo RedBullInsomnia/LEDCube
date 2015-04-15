@@ -1,5 +1,8 @@
-_main: CODE, 280 0 4
+_init: CODE, 378 0 20
+_initSpi: CODE, 398 0 18
+_OpenSPI: CODE, 270 0 86
+_main: CODE, 416 0 6
 _high_isr: CODE, 8 0 262
-__initialization: CODE, 270 0 0
+__initialization: CODE, 356 0 12
 _low_isr: CODE, 24 0 138
-Total: 404
+Total: 542
