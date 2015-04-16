@@ -41,4 +41,6 @@ ehthumbs.db
 Thumbs.db
 *.ini
 *.LBK
-*.LBK
+*.DO
+*.EDF
+*.sts
