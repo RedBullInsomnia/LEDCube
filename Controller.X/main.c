@@ -82,14 +82,18 @@ float previous_error = 0;
 float error = 0;
 float integral = 0;
 float reference = 3.72 * 1024.0 /5.0;     // Referenve voltage (after sensor gain)
-float dt = 0.001024;         // Sampling period: 20ms
+float dt = 0.001008;         // Sampling period: 20ms
 float output;
 float kp = 0.1819,ki = 10;//10.3902;
+float kiDtDemi = 0;
 float Ts = 0.000332;
 
 /* ******************************* MAIN ************************************* */
 void main(void)
 {
+
+    kiDtDemi = ki*dt*0.5;
+
     // PORT C Setting: Set pin 4 in port C to Output
     TRISC = 0b11101111 ;
 
@@ -187,12 +191,12 @@ void setDuty(float duty)
     CCPR2L = cpp >> 2;                  // High bits
 
 
-    if (cpp & 1)
+    if (cpp & 1) // Faut-il mettre 0b1 ou pas car si on met 1 cmt il sait que c'est un seul bit ?????????????????????????????????????
         CCP2CON = CCP2CON & 0b11101111; // Low low bit
     else
         CCP2CON = CCP2CON | 0b00010000; // Low low bit
 
-    if ((cpp>>1) & 1)
+    if ((cpp>>1) & 1) .// Idem ?????????????????????????????????????????????????????????????????????????????????????????????????
         CCP2CON = CCP2CON | 0b00100000; // Low bit
     else
         CCP2CON = CCP2CON & 0b11011111; // Low bit
@@ -238,12 +242,18 @@ void interrupt Timer0_ISR()
         // Controller PI A changer ici
         // Regarder le bit GO/DONE
         error = reference - measured_voltage;
-        //output = kp*(error - previous_error) + ki*dt*0.5*(error + previous_error) + previous_output;
-        //previous_error = error;
-        //previous_output = output;
+        output = kp*(error - previous_error) + kiDtDemi*(error + previous_error) + previous_output;
+        if(output >= 200){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
+            output = 200;
+        }
+        if(output <= -50){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
+            output = -50;
+        }
+        previous_error = error;
+        previous_output = output;
         
         
-        integral = integral + error*dt;
+        //integral = integral + error*dt;
         //if(integral >= 757760 || integral <= -757760) //  = 3.7*1000*1024/5
         //{
             //integral = integral - error*dt;
@@ -252,7 +262,7 @@ void interrupt Timer0_ISR()
         //else
             //clearLight(1);
         
-        output = kp*(error) + ki*integral;
+        //output = kp*(error) + ki*integral;
         
 
         setDuty(output);///5.0);
