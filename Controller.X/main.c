@@ -81,7 +81,7 @@ float previous_output = 0;
 float previous_error = 0;
 float error = 0;
 float integral = 0;
-float reference = 3.72 * 1024.0 /5.0;     // Referenve voltage (after sensor gain)
+float reference = 0;     // Referenve voltage (after sensor gain)
 float dt = 0.001008;         // Sampling period: 20ms
 float output;
 float kp = 0.1819,ki = 10;//10.3902;
@@ -91,7 +91,7 @@ float Ts = 0.000332;
 /* ******************************* MAIN ************************************* */
 void main(void)
 {
-
+    reference = 3.72 * 1024.0 /5.0;
     kiDtDemi = ki*dt*0.5;
 
     // PORT C Setting: Set pin 4 in port C to Output
@@ -245,10 +245,17 @@ void interrupt Timer0_ISR()
         output = kp*(error - previous_error) + kiDtDemi*(error + previous_error) + previous_output;
         if(output >= 200){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
             output = 200;
+            setLight(1);
         }
-        if(output <= -50){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
+        else if(output <= -50){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
             output = -50;
+            setLight(1);
         }
+        else{
+            clearLight(1);
+        }
+        
+
         previous_error = error;
         previous_output = output;
         
