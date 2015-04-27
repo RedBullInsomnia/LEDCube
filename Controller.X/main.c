@@ -82,9 +82,11 @@ float previous_error = 0;
 float error = 0;
 float integral = 0;
 float reference = 0;     // Referenve voltage (after sensor gain)
-float dt = 0.001008;         // Sampling period: 20ms
+//float dt = 0.001008;         // Sampling period: 20ms
+float dt = 0.000756;
 float output;
-float kp = 0.1819,ki = 10;//10.3902;
+//float kp = 0.1819,ki = 10;//10.3902;
+float kp = 0.05,ki = 10;//10.3902; // OK après tuning 
 float kiDtDemi = 0;
 float Ts = 0.000332;
 
@@ -226,8 +228,11 @@ void interrupt Timer0_ISR()
 {
     if (TMR0IE && TMR0IF) //are TMR0 interrupts enabled and is the TMR0 interrupt flag set?
     {
-        TMR0L = 0x4E;
-        TMR0H = 0xEC;
+        setLight(1);
+        //TMR0L = 0x4E;
+        //TMR0H = 0xEC;
+        TMR0L = 0x3B;
+        TMR0H = 0xF1;
         TMR0IF=0; //TMR0 interrupt flag must be cleared in software to allow subsequent interrupts increment the counter variable by 1
 
    
@@ -243,16 +248,16 @@ void interrupt Timer0_ISR()
         // Regarder le bit GO/DONE
         error = reference - measured_voltage;
         output = kp*(error - previous_error) + kiDtDemi*(error + previous_error) + previous_output;
-        if(output >= 200){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
-            output = 200;
-            setLight(1);
+        if(output >= 170){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
+            output = 170;
+            //setLight(1);
         }
-        else if(output <= -50){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
-            output = -50;
-            setLight(1);
+        else if(output <= -5){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
+            output = -5;
+            //setLight(1);
         }
         else{
-            clearLight(1);
+            //clearLight(1);
         }
         
 
@@ -276,7 +281,7 @@ void interrupt Timer0_ISR()
         
         // cnt_update_duty = 0;
         
-        //clearLight(1);
+        clearLight(1);
         //PORTCbits.RC4 =~ PORTCbits.RC4;
     //}
 
