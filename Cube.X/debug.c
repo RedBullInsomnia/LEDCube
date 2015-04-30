@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "delays.h"
 #include <xc.h>
+#include "functions.h"
 
 #define _XTAL_FREQ 8000000
 
@@ -26,5 +27,14 @@ void blink()
 
 void testLevelControl()
 {
+
+}
+
+void sendTestMsg()
+{
+    unsigned char msg = 0x55;
+    unsigned char single = 0xFF; // Yes, it is a single message
+
+    sendByte(msg, single);
 
 }

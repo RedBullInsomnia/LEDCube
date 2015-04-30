@@ -12,7 +12,7 @@
 #include "functions.h"
 #include "debug.h"
 
-#define _XTAL_FREQ 20000000
+#define _XTAL_FREQ 8000000
 
 #define LED1 LATEbits.LATE0
 
@@ -22,11 +22,12 @@ void main(void) {
    
     init();
     startSequence(3);
-    /*unsigned char msg = 0x55;
-    unsigned char single = 0xFF; // Yes, it is a single message
-    */
 
-    LATEbits.LATE0 = 1;
+    sendTestMsg();
+    //LATAbits.LATA2 = 1; //Level 1
+    //for(int i = 0; i <500; i++)
+    //    __delay_ms(50);
+    LATEbits.LATE2 = 1;
     LATEbits.LATE1 = 1;
     LATAbits.LATA0 = 1;
     LATAbits.LATA1 = 1;

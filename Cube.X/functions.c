@@ -7,15 +7,15 @@ void init()
 
     // Output enable on tlc 5916
     TRISDbits.RD2 = 0;
-    PORTDbits.RD2 = 1; //active low
+    LATDbits.LATD2 = 1; //active low
 
     // Latch enable
-    TRISDbits.RD1 = 0;
-    PORTDbits.RD1 = 0;
+    TRISDbits.RD3 = 0;
+    LATDbits.LATD3 = 0;
 
     // Blinky on RD5 as output
     TRISDbits.RD5 = 0;
-    PORTDbits.RD5 = 0; // 0 at beginning
+    LATDbits.LATD5 = 0; // 0 at beginning
 
     // Disable A/D
     ADCON1 = 0x0F;
@@ -28,7 +28,7 @@ void init()
     LATA = 0;
 
     TRISE = 0;
-    PORTE = 0;
+    LATE = 0;
 }
 
 void initSpi()
@@ -50,16 +50,16 @@ void clearCube()
 
 void sendByte(unsigned char byte, unsigned char single)
 {
-    PORTEbits.RE0 = 1; // disable output
-    PORTEbits.RE1 = 0; // LE low
+    LATDbits.LATD2 = 1; // disable output
+    LATDbits.LATD3 = 0; // LE low
 
     WriteSPI(byte);
 
     if(single)
     {
-        PORTEbits.RE1 = 1; // LE high
-        PORTEbits.RE1 = 0; // LE low; to activate latch
-        PORTEbits.RE0 = 0; // enable output
+        LATDbits.LATD3 = 1; // LE high
+        LATDbits.LATD3 = 0; // LE low; to activate latch
+        LATDbits.LATD2 = 0; // enable output
     }
 }
 

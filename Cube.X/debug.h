@@ -16,5 +16,7 @@ void blink();
 
 void testLevelControl();
 
+void sendTestMsg();
+
 #endif	/* DEBUG_H */
 
