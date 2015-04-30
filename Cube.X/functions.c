@@ -1,21 +1,34 @@
 #include "functions.h"
 #include <spi.h>
 
-
 void init()
 {
     initSpi();
 
     // Output enable on tlc 5916
-    TRISEbits.RE0 = 0;
-    PORTEbits.RE0 = 1; //active low
+    TRISDbits.RD2 = 0;
+    PORTDbits.RD2 = 1; //active low
 
     // Latch enable
-    TRISEbits.RE1 = 0;
+    TRISDbits.RD1 = 0;
+    PORTDbits.RD1 = 0;
 
-    // Port D as output
-    TRISD = 0;
-    PORTD = 0; // 0 at beginning
+    // Blinky on RD5 as output
+    TRISDbits.RD5 = 0;
+    PORTDbits.RD5 = 0; // 0 at beginning
+
+    // Disable A/D
+    ADCON1 = 0x0F;
+
+    // Disable comparator
+    CMCON = 0x07;
+
+     // Level selectors
+    TRISA = 0;
+    LATA = 0;
+
+    TRISE = 0;
+    PORTE = 0;
 }
 
 void initSpi()
@@ -28,11 +41,11 @@ void clearCube()
 {
     for (uint8_t i = 0; i < 8; i++)
     {
-		for (uint8_t j = 0; j < 8; j++)
-		{
-			cube[i][j] = 0;
-		}
-	}
+        for (uint8_t j = 0; j < 8; j++)
+        {
+            cube[i][j] = 0;
+        }
+    }
 }
 
 void sendByte(unsigned char byte, unsigned char single)
@@ -85,28 +98,28 @@ void selectLevel(unsigned int level)
 {
     switch(level)
     {
-        case 1 : LATD &= 0b00000001;
+        case 1 : LATA &= 0b00000100; // RA2
         break;
 
-        case 2 : LATD &= 0b00000010;
+        case 2 : LATA &= 0b00001000; // RA3
         break;
 
-        case 3 : LATD &= 0b00000100;
+        case 3 : LATA &= 0b00010000; // RA4
         break;
 
-        case 4 : LATD &= 0b00001000;
+        case 4 : LATA &= 0b00100000; // RA5
         break;
 
-        case 5 : LATD &= 0b00010000;
+        case 5 : LATA &= 0b00000010; // RA1
         break;
 
-        case 6 : LATD &= 0b00100000;
+        case 6 : LATA &= 0b00000001; // RA0
         break;
 
-        case 7 : LATD &= 0b01000000;
+        case 7 : LATE &= 0b0010; // RE1
         break;
 
-        case 8 : LATD &= 0b10000000;
+        case 8 : LATE &= 0b0001; // RE0
         break;
     }
 }

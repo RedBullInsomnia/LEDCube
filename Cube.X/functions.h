@@ -8,7 +8,10 @@
 #ifndef FUNCTIONS_H
 #define	FUNCTIONS_H
 
-#include <stdint.h> // Permet d'utiliser le vecteur de 8 bits : uint8_t
+#include <stdint.h> // Defines uint8_t
+
+#define _XTAL_FREQ 20000000
+
 uint8_t cube[8][8];
 
 void init();
