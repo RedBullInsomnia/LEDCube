@@ -16,15 +16,13 @@
 
 #define LED1 LATEbits.LATE0
 
-volatile uint8_t start = 1;
-
 void main(void) {
    
     init();
     startSequence(3);
 
     sendTestMsg();
-    //LATAbits.LATA2 = 1; //Level 1
+    //LATAbits.LATA2 = 1; // Level 1
     //for(int i = 0; i <500; i++)
     //    __delay_ms(50);
     LATEbits.LATE2 = 1;

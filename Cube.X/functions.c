@@ -26,7 +26,6 @@ void init()
      // Level selectors
     TRISA = 0;
     LATA = 0;
-
     TRISE = 0;
     LATE = 0;
 }
