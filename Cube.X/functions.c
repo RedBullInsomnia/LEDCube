@@ -1,5 +1,9 @@
 #include "functions.h"
+#include "user.h"
+#include <stdint.h>
 #include <spi.h>
+
+#define _XTAL_FREQ 8000000
 
 void init()
 {
@@ -15,7 +19,7 @@ void init()
 
     // Blinky on RD5 as output
     TRISDbits.RD5 = 0;
-    LATDbits.LATD5 = 0; // 0 at beginning
+    blinky = 0; // 0 at beginning
 
     // Disable A/D
     ADCON1 = 0x0F;
@@ -34,6 +38,22 @@ void initSpi()
 {
     CloseSPI();
     OpenSPI(SPI_FOSC_64, MODE_00, SMPMID);
+}
+
+void blink()
+{
+    blinky = 1;
+    for(uint8_t i = 0; i < 50; i++)
+        __delay_ms(50);
+    blinky = 0;
+    for(uint8_t i = 0; i < 50; i++)
+        __delay_ms(50);
+}
+
+void initBlinky(uint8_t length)
+{
+    for (uint8_t i = 0; i < length; i++)
+        blink();
 }
 
 void clearCube()
@@ -70,6 +90,39 @@ void sendByte(uint8_t byte, uint8_t single)
     }
 }
 
+void selectLevel(uint8_t level)
+{
+    // First disable all levels
+    disableLevels();
+
+    switch(level)
+    {
+        case 1 : LEV1 = 1;
+                 break;
+
+        case 2 : LEV2 = 1;
+                 break;
+
+        case 3 : LEV3 = 1;
+                 break;
+
+        case 4 : LEV4 = 1;
+                 break;
+
+        case 5 : LEV5 = 1;
+                 break;
+
+        case 6 : LEV6 = 1;
+                 break;
+
+        case 7 : LEV7 = 1;
+                 break;
+
+        case 8 : LEV8 = 1;
+                 break;
+    }
+}
+
 void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level)
 {
     disableLevels();
@@ -100,38 +153,3 @@ void sendFrame(uint8_t byte[8][8])
         level++;
     }
 }
-
-void selectLevel(uint8_t level)
-{
-    // First disable all levels
-    disableLevels();
-    
-    switch(level)
-    {
-        case 1 : LEV1 = 1;
-                 break;
-
-        case 2 : LEV2 = 1;
-                 break;
-
-        case 3 : LEV3 = 1;
-                 break;
-
-        case 4 : LEV4 = 1;
-                 break;
-
-        case 5 : LEV5 = 1;
-                 break;
-
-        case 6 : LEV6 = 1;
-                 break;
-
-        case 7 : LEV7 = 1;
-                 break;
-
-        case 8 : LEV8 = 1;
-                 break;
-    }
-}
-
-

@@ -1,15 +1,14 @@
-_init: CODE, 564 0 42
-_selectLevel: CODE, 270 0 92
-_testMsg: CODE, 702 0 18
-_initSpi: CODE, 720 0 18
-_OpenSPI: CODE, 362 0 86
-_main: CODE, 510 0 54
-_disableLevels: CODE, 738 0 10
-_high_isr: CODE, 8 0 262
-__initialization: CODE, 680 0 12
-_sendByte: CODE, 606 0 26
-_blink: CODE, 448 0 62
-_startSequence: CODE, 656 0 24
-_WriteSPI: CODE, 632 0 24
+_init: CODE, 960 0 42
+_selectLevel: CODE, 720 0 92
+_initSpi: CODE, 1098 0 18
+_OpenSPI: CODE, 812 0 86
+_main: CODE, 166 0 450
+_disableLevels: CODE, 1116 0 10
+_high_isr: CODE, 8 0 712
+__initialization: CODE, 1076 0 12
+_sendByte: CODE, 1002 0 26
+_initBlinky: CODE, 1052 0 24
+_blink: CODE, 898 0 62
+_WriteSPI: CODE, 1028 0 24
 _low_isr: CODE, 24 0 138
-Total: 868
+Total: 1696
