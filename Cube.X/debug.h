@@ -14,9 +14,9 @@ void startSequence(uint8_t length);
 
 void blink();
 
-void testLevelControl();
+void testMsg();
 
-void sendTestMsg();
+void testLevel();
 
 #endif	/* DEBUG_H */
 

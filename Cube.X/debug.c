@@ -21,16 +21,17 @@ void blink()
         __delay_ms(50);
 }
 
-void testLevelControl()
-{
-
-}
-
-void sendTestMsg()
+void testMsg()
 {
     uint8_t msg = 0x55;
     uint8_t single = 0xFF; // Yes, it is a single message
 
     sendByte(msg, single);
+}
 
+void testLevel()
+{
+    uint8_t msg = 0x55;
+    uint8_t level = 3;
+    sendLevel(msg, level);
 }

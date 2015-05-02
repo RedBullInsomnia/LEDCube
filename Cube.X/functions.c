@@ -23,7 +23,7 @@ void init()
     // Disable comparator
     CMCON = 0x07;
 
-     // Level selectors
+     // Init Level selectors
     TRISA = 0;
     LATA = 0;
     TRISE = 0;
@@ -39,86 +39,99 @@ void initSpi()
 void clearCube()
 {
     for (uint8_t i = 0; i < 8; i++)
-    {
         for (uint8_t j = 0; j < 8; j++)
-        {
             cube[i][j] = 0;
-        }
-    }
 }
 
-void sendByte(unsigned char byte, unsigned char single)
+void disableLevels()
 {
-    LATDbits.LATD2 = 1; // disable output
-    LATDbits.LATD3 = 0; // LE low
+    LATA &= 0b11100000;
+    LATE &= 0b1100;
+}
+
+void enableLevels()
+{
+    LATA |= 0b11111111;
+    LATE |= 0b1111;
+}
+
+void sendByte(uint8_t byte, uint8_t single)
+{
+    OE = 1; // disable output
+    LE = 0; // LE low
 
     WriteSPI(byte);
 
     if(single)
     {
-        LATDbits.LATD3 = 1; // LE high
-        LATDbits.LATD3 = 0; // LE low; to activate latch
-        LATDbits.LATD2 = 0; // enable output
+        LE = 1; // LE high
+        LE = 0; // LE low; to activate latch
+        OE = 0; // enable output
     }
 }
 
-void sendByteL(unsigned char byte, unsigned char single, unsigned int level)
+void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level)
 {
-    PORTD = 0;
+    disableLevels();
     sendByte(byte, single);
     selectLevel(level);
 }
 
-void sendLevel(unsigned char byte[8], unsigned int level)
+void sendLevel(uint8_t byte[8], uint8_t level)
 {
-    PORTD = 0x0; //disable all levels
+    disableLevels();
 
     for (int i = 0; i < 8; i++)
         sendByte(byte[i], 0); //send 8 bytes
 
     // Latch and activate
     selectLevel(level);
-    PORTEbits.RE1 = 1; // LE high
-    PORTEbits.RE1 = 0; // LE low; to activate latch
-    PORTEbits.RE0 = 0; // enable output
+    LE = 1; // LE high
+    LE = 0; // LE low; to activate latch
+    OE = 0; // enable output
 }
 
-void sendFrame(unsigned char byte[8][8])
+void sendFrame(uint8_t byte[8][8])
 {
-    unsigned int level = 1;
-    for (int i = 0; i < 8; i++)
+    uint8_t level = 1;
+    for (uint8_t i = 0; i < 8; i++)
     {
         sendLevel(byte[i], level);
-        level = level*2;
+        level++;
     }
 }
 
-void selectLevel(unsigned int level)
+void selectLevel(uint8_t level)
 {
+    // First disable all levels
+    disableLevels();
+    
     switch(level)
     {
-        case 1 : LATA &= 0b00000100; // RA2
-        break;
+        case 1 : LEV1 = 1;
+                 break;
 
-        case 2 : LATA &= 0b00001000; // RA3
-        break;
+        case 2 : LEV2 = 1;
+                 break;
 
-        case 3 : LATA &= 0b00010000; // RA4
-        break;
+        case 3 : LEV3 = 1;
+                 break;
 
-        case 4 : LATA &= 0b00100000; // RA5
-        break;
+        case 4 : LEV4 = 1;
+                 break;
 
-        case 5 : LATA &= 0b00000010; // RA1
-        break;
+        case 5 : LEV5 = 1;
+                 break;
 
-        case 6 : LATA &= 0b00000001; // RA0
-        break;
+        case 6 : LEV6 = 1;
+                 break;
 
-        case 7 : LATE &= 0b0010; // RE1
-        break;
+        case 7 : LEV7 = 1;
+                 break;
 
-        case 8 : LATE &= 0b0001; // RE0
-        break;
+        case 8 : LEV8 = 1;
+                 break;
     }
 }
+
+
