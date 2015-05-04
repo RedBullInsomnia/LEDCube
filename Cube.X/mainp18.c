@@ -81,4 +81,23 @@ void main(void) {
             }
         }*/
     }
+
+    
+
+    // Test marine :
+    /*    init();
+        Delay100TCYx (120*1);
+        clearCube(); 
+
+        while ( 1 ){    
+
+            cube_block_wipe();
+
+            Delay100TCYx (120*100);
+            Delay100TCYx (120*100);
+
+            cubes_4();
+    */
+
+
 }
