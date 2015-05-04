@@ -11,27 +11,37 @@ void init()
 
     // Output enable on tlc 5916
     TRISDbits.RD2 = 0;
-    LATDbits.LATD2 = 1; //active low
+    OE = 0; //active low
 
     // Latch enable
     TRISDbits.RD3 = 0;
-    LATDbits.LATD3 = 0;
+    LE = 0;
 
     // Blinky on RD5 as output
     TRISDbits.RD5 = 0;
     blinky = 0; // 0 at beginning
 
-    // Disable A/D
+    // Disable A/D on port A
     ADCON1 = 0x0F;
 
-    // Disable comparator
+    // Disable comparator on port A
     CMCON = 0x07;
 
-     // Init Level selectors
-    TRISA = 0;
-    LATA = 0;
-    TRISE = 0;
-    LATE = 0;
+     // Initialize Level selectors
+    TRISAbits.TRISA0 = 0;
+    TRISAbits.TRISA1 = 0;
+    TRISAbits.TRISA2 = 0;
+    TRISAbits.TRISA3 = 0;
+    TRISAbits.TRISA4 = 0;
+    TRISAbits.TRISA5 = 0;
+
+    TRISEbits.TRISE0 = 0;
+    TRISEbits.TRISE1 = 0;
+    
+    disableLevels();
+
+    // Clear the cube
+    clearCube();
 }
 
 void initSpi()
@@ -63,6 +73,13 @@ void clearCube()
             cube[i][j] = 0;
 }
 
+void fullCube()
+{
+    for (uint8_t i = 0; i < 8; i++)
+        for (uint8_t j = 0; j < 8; j++)
+            cube[i][j] = 0xFF;
+}
+
 void disableLevels()
 {
     LATA &= 0b11100000;
@@ -77,16 +94,15 @@ void enableLevels()
 
 void sendByte(uint8_t byte, uint8_t single)
 {
-    OE = 1; // disable output
     LE = 0; // LE low
 
     WriteSPI(byte);
 
-    if(single)
+    if(single > 0)
     {
         LE = 1; // LE high
+        //__delay_ms(10);
         LE = 0; // LE low; to activate latch
-        OE = 0; // enable output
     }
 }
 
@@ -95,8 +111,10 @@ void selectLevel(uint8_t level)
     // First disable all levels
     disableLevels();
 
+    // Then, activate the one you want
     switch(level)
     {
+        case 0 :
         case 1 : LEV1 = 1;
                  break;
 
@@ -132,16 +150,16 @@ void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level)
 
 void sendLevel(uint8_t byte[8], uint8_t level)
 {
-    disableLevels();
+    //disableLevels();
 
-    for (int i = 0; i < 8; i++)
-        sendByte(byte[i], 0); //send 8 bytes
+    for (uint8_t i = 0; i < 8; i++)
+        sendByte(byte[i], 0); //send 8 bytes 8 times
 
     // Latch and activate
     selectLevel(level);
     LE = 1; // LE high
     LE = 0; // LE low; to activate latch
-    OE = 0; // enable output
+    //OE = 0; // enable output
 }
 
 void sendFrame(uint8_t byte[8][8])
@@ -149,6 +167,8 @@ void sendFrame(uint8_t byte[8][8])
     uint8_t level = 1;
     for (uint8_t i = 0; i < 8; i++)
     {
+        if (i == 3)
+            continue;
         sendLevel(byte[i], level);
         level++;
     }

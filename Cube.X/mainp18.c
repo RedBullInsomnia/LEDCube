@@ -10,6 +10,7 @@
 #include <delays.h>
 #include <xc.h>
 #include "functions.h"
+#include "user.h"
 
 #define _XTAL_FREQ 8000000
 
@@ -19,7 +20,7 @@ void main(void) {
     init();
     initBlinky(3);
 
-    selectLevel(1);
+    /*selectLevel(1);
     // First test, just one byte
     sendByte(0x01, 1);
     for (uint8_t j = 1; j < 90; j++)
@@ -32,54 +33,67 @@ void main(void) {
                 __delay_ms(20);
     sendByte(0x0F, 1);
     for (uint8_t j = 1; j < 90; j++)
-                __delay_ms(20);
-    sendByte(0x1F, 1);
-    for (uint8_t j = 1; j < 90; j++)
-                __delay_ms(20);
+                __delay_ms(20);*/
+    //sendByte(0x1F, 1);
+    //for (uint8_t j = 1; j < 90; j++)
+      //          __delay_ms(20);
     // Test whole level
     //enableLevels();
     //disableLevels();
     //LEV3 = 1;
 
+    // End of init
+    
+
+    clearCube();
+
+//    selectLevel(6);
+//    sendByte(0x01, 0);
+//    sendByte(0x03, 0);
+//    sendByte(0x07, 0);
+//    sendByte(0x0F, 0);
+//    sendByte(0x1F, 0);
+//    sendByte(0x3F, 0);
+//    sendByte(0x7F, 0);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+//    sendByte(0x00, 1);
+//    for (uint8_t j = 1; j < 150; j++)
+//        __delay_ms(20);
+
+    //sendByte(0x02, 1);
+    
     while(1)
     {
-        for (int i = 1; i < 8; i++)
+      //  sendByte(0x01, 0);
+        for (uint8_t i = 0; i < 8; i++)
         {
-            selectLevel(1);
-            sendByte(0x01, 1);
-            for (uint8_t j = 1; j < 90; j++)
-                        __delay_ms(20);
-            sendByte(0x03, 1);
-            for (uint8_t j = 1; j < 90; j++)
-                        __delay_ms(20);
-            sendByte(0x07, 1);
-            for (uint8_t j = 1; j < 90; j++)
-                        __delay_ms(20);
-            sendByte(0x0F, 1);
-            for (uint8_t j = 1; j < 90; j++)
-                        __delay_ms(20);
-            sendByte(0x1F, 1);
-            for (uint8_t j = 1; j < 90; j++)
-                        __delay_ms(20);
-            if(8 == i)
-                i = 1;
-        }
-        /*
-        for (uint8_t i = 1; i < 8; i++)
-        {
-            selectLevel(i);
-
-            // Delay
-            for (uint8_t j = 1; j < 9; j++)
-                __delay_ms(20);
-
-            // Loop
-            if (8 == i)
+            for (uint8_t k = 0; k < 6; k++)
             {
-                sendByte(0xAA, 1);
-                i = 1;
+                cube[i][k] = 0xFF;
+                sendFrame(cube);
+                //for (uint8_t j = 1; j < 20; j++)
+                  //          __delay_ms(20);
             }
-        }*/
+        }
+       // sendByte(0x55, 0);
+       // sendByte(0xFF, 0);
+       // sendByte(0x55, 0);
+       // sendByte(0xFF, 1);
+        
     }
 
     

@@ -16,11 +16,13 @@ void init();
 
 void initSpi();
 
-void blinky();
+void blink();
 
 void initBlinky(uint8_t length);
 
 void clearCube();
+
+void fullCube();
 
 void disableLevels();
 
