@@ -82,7 +82,7 @@ void fullCube()
 
 void disableLevels()
 {
-    LATA &= 0b11100000;
+    LATA &= 0b11000000;
     LATE &= 0b1100;
 }
 
@@ -167,8 +167,6 @@ void sendFrame(uint8_t byte[8][8])
     uint8_t level = 1;
     for (uint8_t i = 0; i < 8; i++)
     {
-        if (i == 3)
-            continue;
         sendLevel(byte[i], level);
         level++;
     }

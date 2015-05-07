@@ -20,9 +20,9 @@ void main(void) {
     init();
     initBlinky(3);
 
-    /*selectLevel(1);
+    selectLevel(4);
     // First test, just one byte
-    sendByte(0x01, 1);
+    /*sendByte(0x01, 1);
     for (uint8_t j = 1; j < 90; j++)
                 __delay_ms(20);
     sendByte(0x03, 1);
