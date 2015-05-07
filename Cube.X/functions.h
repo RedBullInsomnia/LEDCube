@@ -11,10 +11,14 @@
 #include <stdint.h>
 
 uint8_t cube[8][8];
+uint8_t currentLevel;
+uint8_t irCount;
 
 void init();
 
 void initSpi();
+
+void resetTimer();
 
 void blink();
 
@@ -37,5 +41,7 @@ void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level);
 void sendLevel(uint8_t byte[8], uint8_t level);
 
 void sendFrame(uint8_t byte[8][8]);
+
+void interrupt Timer0_ISR();
 
 #endif	/* FUNCTIONS_H */

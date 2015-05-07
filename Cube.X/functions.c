@@ -3,11 +3,17 @@
 #include <stdint.h>
 #include <spi.h>
 
-#define _XTAL_FREQ 8000000
+#define _XTAL_FREQ 30000000
 
 void init()
 {
     initSpi();
+
+    // configure the timer 0
+    T0CON = 0b10011000; // activate the timer0 with the right parameters
+    TMR0IE = 1; //enable TMR0 overflow interrupts (voir INTCON PDF page 113)
+    GIE = 1; //enable Global interrupts
+    resetTimer();
 
     // Output enable on tlc 5916
     TRISDbits.RD2 = 0;
@@ -42,6 +48,9 @@ void init()
 
     // Clear the cube
     clearCube();
+
+    currentLevel = 0;
+    irCount = 0;
 }
 
 void initSpi()
@@ -50,14 +59,23 @@ void initSpi()
     OpenSPI(SPI_FOSC_64, MODE_00, SMPMID);
 }
 
+void resetTimer()
+{
+//    TMR0L = 0x61;
+//    TMR0H = 0xDB;
+      TMR0L = 0xAD;
+      TMR0H = 0xF8;
+    TMR0IF = 0;//TMR0 interrupt flag must be cleared in software to allow subsequent interrupts increment the counter variable by 1
+}
+
 void blink()
 {
     blinky = 1;
-    for(uint8_t i = 0; i < 50; i++)
-        __delay_ms(50);
+    for(uint8_t i = 0; i < 255; i++)
+        __delay_ms(10);
     blinky = 0;
-    for(uint8_t i = 0; i < 50; i++)
-        __delay_ms(50);
+    for(uint8_t i = 0; i < 255; i++)
+        __delay_ms(10);
 }
 
 void initBlinky(uint8_t length)
@@ -92,13 +110,13 @@ void enableLevels()
     LATE |= 0b1111;
 }
 
-void sendByte(uint8_t byte, uint8_t single)
+void sendByte(uint8_t byte, uint8_t latch)
 {
     LE = 0; // LE low
 
     WriteSPI(byte);
 
-    if(single > 0)
+    if(latch > 0)
     {
         LE = 1; // LE high
         //__delay_ms(10);
@@ -110,56 +128,78 @@ void selectLevel(uint8_t level)
 {
     // First disable all levels
     disableLevels();
+    Nop();   //!!!!!!!!!!!!!!
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
+    Nop();
 
     // Then, activate the one you want
     switch(level)
     {
-        case 0 :
-        case 1 : LEV1 = 1;
+        case 0 : LEV1 = 1;
                  break;
 
-        case 2 : LEV2 = 1;
+        case 1 : LEV2 = 1;
                  break;
 
-        case 3 : LEV3 = 1;
+        case 2 : LEV3 = 1;
                  break;
 
-        case 4 : LEV4 = 1;
+        case 3 : LEV4 = 1;
                  break;
 
-        case 5 : LEV5 = 1;
+        case 4 : LEV5 = 1;
                  break;
 
-        case 6 : LEV6 = 1;
+        case 5 : LEV6 = 1;
                  break;
 
-        case 7 : LEV7 = 1;
+        case 6 : LEV7 = 1;
                  break;
 
-        case 8 : LEV8 = 1;
+        case 7 : LEV8 = 1;
                  break;
     }
 }
 
-void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level)
+void sendByteAndLevel(uint8_t byte, uint8_t latch, uint8_t level)
 {
     disableLevels();
-    sendByte(byte, single);
+    sendByte(byte, latch);
     selectLevel(level);
 }
 
 void sendLevel(uint8_t byte[8], uint8_t level)
 {
     //disableLevels();
-
-    for (uint8_t i = 0; i < 8; i++)
-        sendByte(byte[i], 0); //send 8 bytes 8 times
+    OE = 1;
+    sendByte(byte[7], 0); //send 8 bytes - driver 
+    sendByte(byte[6], 0); //send 8 bytes - driver 
+    sendByte(byte[3], 0); //send 8 bytes - driver 
+    sendByte(byte[2], 0); //send 8 bytes - driver 
+    sendByte(byte[5], 0); //send 8 bytes - driver 
+    sendByte(byte[4], 0); //send 8 bytes - driver 
+    sendByte(byte[1], 0); //send 8 bytes - driver 
+    sendByte(byte[0], 0); //send 8 bytes - driver 
 
     // Latch and activate
     selectLevel(level);
     LE = 1; // LE high
     LE = 0; // LE low; to activate latch
-    //OE = 0; // enable output
+    OE = 0; // enable output
 }
 
 void sendFrame(uint8_t byte[8][8])
@@ -170,4 +210,37 @@ void sendFrame(uint8_t byte[8][8])
         sendLevel(byte[i], level);
         level++;
     }
+}
+
+void interrupt Timer0_ISR()
+{
+    if (TMR0IE && TMR0IF)
+    {
+        resetTimer();
+        if (irCount == 4) //are TMR0 interrupts enabled and is the TMR0 interrupt flag set?
+        {
+            blinky = 1;
+            //resetTimer();
+            
+            sendLevel(cube[currentLevel], currentLevel);
+            //sendLevel(cube[currentLevel], 0);
+            if(currentLevel == 7)
+                currentLevel = 0;
+            else
+                currentLevel++;
+
+            blinky = 0;
+        }
+        else if (irCount == 3) //are TMR0 interrupts enabled and is the TMR0 interrupt flag set?
+        {
+            disableLevels();
+        }
+
+        if(irCount == 4)
+            irCount = 0;
+        else
+            irCount++;
+        
+    }
+
 }
