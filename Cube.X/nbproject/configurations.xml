@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>system.h</itemPath>
-      <itemPath>user.h</itemPath>
       <itemPath>functions.h</itemPath>
       <itemPath>animations.h</itemPath>
     </logicalFolder>
@@ -20,7 +19,6 @@
       <itemPath>configuration_bits.c</itemPath>
       <itemPath>system.c</itemPath>
       <itemPath>interrupts.c</itemPath>
-      <itemPath>user.c</itemPath>
       <itemPath>functions.c</itemPath>
       <itemPath>animations.c</itemPath>
     </logicalFolder>

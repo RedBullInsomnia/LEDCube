@@ -30,7 +30,6 @@ void move_y_rev( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 );
 void move_x_fwd( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 );
 void move_x_rev( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 );
 
-
 // Caroline
 void cube_string_to_front(char *string, int size);
 void cube_char(char ch, uint8_t z );

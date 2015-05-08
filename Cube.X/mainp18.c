@@ -6,11 +6,9 @@
  */
 
 #include <p18cxxx.h>
-#include <spi.h>
 #include <delays.h>
 #include <xc.h>
 #include "functions.h"
-#include "user.h"
 #include "animations.h"
 
 #define _XTAL_FREQ 30000000
@@ -21,16 +19,7 @@ void main(void) {
     init();
     //initBlinky(3);
 
-    
-    // Test whole level
-    //enableLevels();
-    //disableLevels();
-    //LEV3 = 1;
-
-    // End of init
-    
-
-    clearCube();
+    resetCube();
 
 //    selectLevel(6);
 //    sendByte(0x01, 0);
@@ -63,8 +52,10 @@ void main(void) {
     
     while(1)
     {
-        // Caroline
-        cube_string_to_front("coucoujemappellecaroline", 24);
+        // Caroline text
+        char text[] = "vabientefairefoutre";
+        cube_string_to_front(text, 19);
+        //cube_string_to_front("coucoujemapellecaroline", 24);
 //        // Drivers
 //        for(uint8_t j = 8; j > 0; j--)
 //        {
@@ -162,9 +153,6 @@ void main(void) {
        // sendByte(0xFF, 1);
         
     }
-
-    
-
     // Test marine :
     /*    init();
         Delay100TCYx (120*1);
@@ -179,6 +167,4 @@ void main(void) {
 
             cubes_4();
     */
-
-
 }

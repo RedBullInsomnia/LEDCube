@@ -10,23 +10,62 @@
 
 #include <stdint.h>
 
+/******************************************************************************/
+/* User Level #define Macros                                                  */
+/******************************************************************************/
+
+/* Level selectors */
+#define LEV1 LATAbits.LATA2
+#define LEV2 LATAbits.LATA3
+#define LEV3 LATAbits.LATA4
+#define LEV4 LATAbits.LATA5
+#define LEV5 LATAbits.LATA1
+#define LEV6 LATAbits.LATA0
+#define LEV7 LATEbits.LATE1
+#define LEV8 LATEbits.LATE0
+
+/* OE, LE */
+#define OE LATDbits.LATD2
+#define LE LATDbits.LATD3
+
+/* Blinky */
+#define blinky LATDbits.LATD5
+
+
+/******************************************************************************/
+/* Global variables                                                           */
+/******************************************************************************/
+
 uint8_t cube[8][8];
 uint8_t currentLevel;
 uint8_t irCount;
 
+/******************************************************************************/
+/* Function prototypes                                                        */
+/******************************************************************************/
+
+/*
+ * Initializes the outputs : LEV1 -> LEV8, blinky and timer0
+ */
 void init();
 
+/*
+ * Inits the SPI ports
+ */
 void initSpi();
 
+/*
+ * Resets the timer after an interrupt has
+ */
 void resetTimer();
 
 void blink();
 
 void initBlinky(uint8_t length);
 
-void clearCube();
+void resetCube();
 
-void fullCube();
+void setCube();
 
 void disableLevels();
 
