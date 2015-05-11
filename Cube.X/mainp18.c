@@ -52,11 +52,16 @@ void main(void) {
     
     while(1)
     {
+//        snow();
+//        for (uint8_t j = 1; j < 10; j++)
+//            __delay_ms(10);
+
+        //setCube();
         // Caroline text
-        char text[] = "vabientefairefoutre";
-        cube_string_to_front(text, 19);
-        //cube_string_to_front("coucoujemapellecaroline", 24);
-//        // Drivers
+        char text[] = "wingardium leviosaaaa";
+        cube_string_to_front(text, 21);
+
+        // Drivers
 //        for(uint8_t j = 8; j > 0; j--)
 //        {
 //            // Levels
@@ -153,18 +158,4 @@ void main(void) {
        // sendByte(0xFF, 1);
         
     }
-    // Test marine :
-    /*    init();
-        Delay100TCYx (120*1);
-        clearCube(); 
-
-        while ( 1 ){    
-
-            cube_block_wipe();
-
-            Delay100TCYx (120*100);
-            Delay100TCYx (120*100);
-
-            cubes_4();
-    */
 }

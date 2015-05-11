@@ -1,11 +1,19 @@
 #include "functions.h"
 #include <stdint.h>
 #include <spi.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define _XTAL_FREQ 30000000
 
 void init() {
     initSpi();
+
+    // Init random numbers
+//    time_t toc;
+//    time(&toc);
+//    srand((int)toc);
 
     // configure timer 0
     T0CON = 0b10011000; //activate the timer0 with the right parameters
