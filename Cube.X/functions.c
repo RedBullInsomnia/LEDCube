@@ -205,6 +205,12 @@ void sendFrame(uint8_t byte[8][8]) {
     }
 }
 
+void delay_10ms(int multiplier)
+{
+    for(int i=0; i<multiplier ; i++)
+        __delay_ms(10);
+}
+
 void interrupt Timer0_ISR() {
     if (TMR0IE && TMR0IF) {
         resetTimer();
