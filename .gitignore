@@ -1,6 +1,7 @@
 # Debug folder
 build/
 dist/
+nbproject/
 
 # Compiled source #
 ###################

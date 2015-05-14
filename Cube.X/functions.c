@@ -10,16 +10,14 @@
 void init() {
     initSpi();
 
-    // Init random numbers
-//    time_t toc;
-//    time(&toc);
-//    srand((int)toc);
-
     // configure timer 0
     T0CON = 0b10011000; //activate the timer0 with the right parameters
     TMR0IE = 1; //enable TMR0 overflow interrupts (INTCON PDF pg. 113)
     GIE = 1; //enable Global interrupts
     resetTimer();
+
+    // Init random numbers
+    srand(TMR0L);
 
     // Output enable on tlc 5916
     TRISDbits.RD2 = 0;

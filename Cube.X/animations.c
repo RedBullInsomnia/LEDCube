@@ -49,10 +49,13 @@
 void snow()
 {
 
-    int rnd1, rnd2;
+    int rnd[4];
 
-    rnd1 = TMR0L;
-    rnd2 = TMR0H;
+    for(uint8_t i = 0; i < 4 ; i++)
+    {
+        rnd[i] = rand();
+        rnd[i] = rnd[i]%8;
+    }
 
     // Go down
     for(uint8_t i = 1; i<8; i++)
@@ -63,10 +66,8 @@ void snow()
     for(uint8_t j =0; j<8; j++)
         cube[7][j] = 0;
 
-    rnd1 = rnd1%8;
-    rnd2 = rnd2%8;
-    cube[7][rnd1] = 1 << rnd2;
-
+    for(uint8_t i = 0; i < 4 ; i=1+2)
+        cube[7][rnd[i]] = 1 << rnd[i+1];
 }
 
 

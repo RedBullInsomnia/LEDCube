@@ -26,31 +26,20 @@ void main(void) {
     while(1)
     {
 
-//        snow();
-//        delay_10ms(10);
-//
-//        setCube();
-//        
+        snow();
+        delay_10ms(10);
 //        char text[] = "wingardium leviosaaaa";
 //        cube_string_to_front(text, 21);
 
-        cube_char('t', 4);
-//        // Drivers
-//        for(uint8_t j = 8; j > 0; j--)
+//        // Levels
+//        for(uint8_t l = 0; l < 8; l++)
 //        {
-//            // Levels
-//            for(uint8_t i = 0; i < 8; i++)
+//            // drivers
+//            for(uint8_t d = 0; d < 4; d++)
 //            {
-//
-//                for(uint8_t k = 0; k < 8; k++)
-//                {
-//                    cube[i][j-1] = cube[i][j-1]*2+1;
-//                    for (uint8_t j = 1; j < 5; j++)
-//                        __delay_ms(10);
-//                }
+//                cube[l][d] = 0xFF;
 //            }
 //        }
-
 
     }
 }
