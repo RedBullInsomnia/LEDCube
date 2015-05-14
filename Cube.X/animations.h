@@ -18,6 +18,8 @@
 #define CUBES4_DELAY 5
 
 void snow();
+void edges();
+void rotate_90();
 void cube_block_wipe( void );
 void move_x_fwd( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 );
 void cube_show_loop( uint8_t cycle );

@@ -21,13 +21,18 @@ void main(void) {
 
     resetCube();
 
-
     
+    //cube_char('g',4);
+    
+
     while(1)
     {
-
-        snow();
-        delay_10ms(10);
+        edges();
+        delay_10ms(1);
+        
+        //snow();
+        
+//        delay_10ms(10);
 //        char text[] = "wingardium leviosaaaa";
 //        cube_string_to_front(text, 21);
 
