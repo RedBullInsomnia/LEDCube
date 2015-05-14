@@ -1,17 +1,17 @@
-___ftneg: CODE, 3568 0 38
-_setLight: CODE, 3606 0 10
-_Timer0_ISR: CODE, 8 0 1220
-i2___ftadd: CODE, 1228 0 428
-_clearLight: CODE, 3616 0 10
-___ftpack: CODE, 2284 0 266
-_main: CODE, 2012 0 272
-___ftadd: CODE, 28 0 640
-i2___ftmul: CODE, 2550 0 228
-i2___ftpack: CODE, 2990 0 168
-__initialization: CODE, 3436 0 76
-___lbtoft: CODE, 3518 0 50
-_setDuty: CODE, 3302 0 134
-___ftmul: CODE, 1656 0 356
-___fttol: CODE, 2778 0 212
-___ftge: CODE, 3158 0 144
-Total: 4252
+___ftneg: CODE, 3936 0 38
+_setLight: CODE, 3974 0 10
+_Timer0_ISR: CODE, 8 0 1392
+i2___ftadd: CODE, 1848 0 440
+_clearLight: CODE, 3984 0 10
+___ftpack: CODE, 2288 0 314
+_main: CODE, 2602 0 284
+___ftadd: CODE, 24 0 812
+i2___ftmul: CODE, 2886 0 236
+i2___ftpack: CODE, 3334 0 168
+__initialization: CODE, 3780 0 76
+___lbtoft: CODE, 3862 0 74
+_setDuty: CODE, 3646 0 134
+___ftmul: CODE, 1400 0 448
+___fttol: CODE, 3122 0 212
+___ftge: CODE, 3502 0 144
+Total: 4792

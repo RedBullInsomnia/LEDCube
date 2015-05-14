@@ -1,6 +1,9 @@
 #include "functions.h"
 #include <stdint.h>
 #include <spi.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define _XTAL_FREQ 30000000
 
@@ -12,6 +15,9 @@ void init() {
     TMR0IE = 1; //enable TMR0 overflow interrupts (INTCON PDF pg. 113)
     GIE = 1; //enable Global interrupts
     resetTimer();
+
+    // Init random numbers
+    srand(TMR0L);
 
     // Output enable on tlc 5916
     TRISDbits.RD2 = 0;
@@ -195,6 +201,12 @@ void sendFrame(uint8_t byte[8][8]) {
         sendLevel(byte[i], level);
         level++;
     }
+}
+
+void delay_10ms(int multiplier)
+{
+    for(int i=0; i<multiplier ; i++)
+        __delay_ms(10);
 }
 
 void interrupt Timer0_ISR() {

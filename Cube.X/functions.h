@@ -81,6 +81,8 @@ void sendLevel(uint8_t byte[8], uint8_t level);
 
 void sendFrame(uint8_t byte[8][8]);
 
+void delay_10ms(int multiplier);
+
 void interrupt Timer0_ISR();
 
 #endif	/* FUNCTIONS_H */

@@ -45,13 +45,39 @@
 //    ;
 //}
 
+/* Snow */
+void snow()
+{
+
+    int rnd[4];
+
+    for(uint8_t i = 0; i < 4 ; i++)
+    {
+        rnd[i] = rand();
+        rnd[i] = rnd[i]%8;
+    }
+
+    // Go down
+    for(uint8_t i = 1; i<8; i++)
+        for(uint8_t j =0; j<8; j++)
+            cube[i-1][j] = cube[i][j];
+
+    // Generate new level
+    for(uint8_t j =0; j<8; j++)
+        cube[7][j] = 0;
+
+    for(uint8_t i = 0; i < 4 ; i=1+2)
+        cube[7][rnd[i]] = 1 << rnd[i+1];
+}
+
+
 /* front to back moving */
 void cube_string_to_front(char *string, int size) {
     for (uint8_t i = 0; i < size; i++) {
         for (uint8_t i = 8; i > 0; i--) {
             resetCube();
             cube_char(*string, (1 << (i - 1)));
-            for (uint8_t j = 1; j < 5; j++)
+            for (uint8_t j = 1; j < 7; j++)
                 __delay_ms(10);
         }
         string++;
@@ -60,6 +86,9 @@ void cube_string_to_front(char *string, int size) {
 
 void cube_char(char ch, uint8_t z) {
     switch (ch) {
+        case ' ':
+            resetCube();
+            break;
         case '0':
             cube[0][2] |= z;
             cube[0][3] |= z;
@@ -226,7 +255,6 @@ void cube_char(char ch, uint8_t z) {
             cube[6][3] |= z;
             cube[6][4] |= z;
             break;
-
         case '!':
             cube[0][3] |= z;
             cube[3][3] |= z;

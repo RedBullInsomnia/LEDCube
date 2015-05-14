@@ -186,7 +186,7 @@ void setDuty(float duty)
     //freq_duty = (1/duty) * 30000;
     //cpp = (int)//(_XTAL_FREQ / freq_duty);
     
-    cpp = duty;
+    cpp = (int)duty;
     CCPR2L = cpp;
 
     /*
@@ -248,12 +248,12 @@ void interrupt Timer0_ISR()
         // Regarder le bit GO/DONE
         error = reference - measured_voltage;
         output = kp*(error - previous_error) + kiDtDemi*(error + previous_error) + previous_output;
-        if(output >= 170){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
-            output = 170;
+        if(output > 116){ // Output est le duty or duty max est PR2 = 166 alors ne sert à rien d'aller trop loin de cette valeur
+            output = 116;
             //setLight(1);
         }
-        else if(output <= -5){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
-            output = -5;
+        else if(output <= 16.6){ // Idem output est duty or duty min est PR2 alors ne sert à rien d'aller trop en dessous
+            output = 16.6;
             //setLight(1);
         }
         else{
