@@ -27,8 +27,16 @@ void main(void) {
 
     while(1)
     {
-        edges();
-        delay_10ms(1);
+        if(buttonPressed == 0){
+            blinky = 0;
+            edges();
+        }
+        else{
+            //blinky = 1;
+            setCube();
+            delay_10ms(500);
+            buttonPressed = 0;
+        }
         
         //snow();
         

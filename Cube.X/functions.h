@@ -39,6 +39,8 @@
 uint8_t cube[8][8];
 uint8_t currentLevel;
 
+uint8_t buttonPressed = 0;
+
 /******************************************************************************/
 /* Function prototypes                                                        */
 /******************************************************************************/
@@ -84,4 +86,5 @@ void delay_10ms(int multiplier);
 
 void interrupt Timer0_ISR();
 
+void interrupt pressedOnButton();
 #endif	/* FUNCTIONS_H */

@@ -10,11 +10,31 @@
 void init() {
     initSpi();
 
+    // Interrupt priority
+    IPEN = 1; // Interrupt priority bit
+    GIE = 1; //enable Global interrupts (high priority as IPEN = 1)
+    GIEL = 1; //enable low priority interrupts
+
+
     // configure timer 0
     T0CON = 0b10011000; //activate the timer0 with the right parameters
     TMR0IE = 1; //enable TMR0 overflow interrupts (INTCON PDF pg. 113)
-    GIE = 1; //enable Global interrupts
+    TMR0IP = 1; // TMRO is a high priority interrupt ( bit 2 de INTCON 2)
     resetTimer();
+
+    // Configure the external interrupt based on INT2 for Button 1
+    // page 100 et suivantes datasheet
+    
+    // Configure INT2 has an input
+    TRISBbits.RB2 = 1;
+
+    //RBPU = 0;
+    INT2IE = 1;
+    INT2IP = 0;
+    INT2IF = 0;
+    INTEDG2 = 0; // Interrupt on a falling edge ( bit 4 de INTCON 2)
+
+
 
     // Init random numbers
     srand(TMR0L);
@@ -211,7 +231,7 @@ void delay_10ms(int multiplier)
 void interrupt Timer0_ISR() {
     if (TMR0IE && TMR0IF) {
         resetTimer();
-        blinky = 1;
+        //blinky = 1;
 
         sendLevel(cube[currentLevel], currentLevel);
 
@@ -220,6 +240,17 @@ void interrupt Timer0_ISR() {
         else
             currentLevel++;
 
-        blinky = 0;
+        //blinky = 0;
+    }
+}
+
+
+void interrupt pressedOnButton() {
+    if (INT2IE && INT2IF) {
+        blinky = 1;
+        // do something
+        buttonPressed = 1;
+        //blinky = 0;
+        INT2IF = 0;
     }
 }
