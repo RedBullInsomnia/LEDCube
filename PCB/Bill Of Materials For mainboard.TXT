@@ -7,12 +7,12 @@ Author:   <NONE>
 Created:  08/02/15
 Modified: 14/05/15
 
-QTY  PART-REFS           VALUE               CODE                          
----  ---------           -----               ----                          
+QTY  PART-REFS           VALUE               FARNELL CODE                          
+---  ---------           -----               ------------                          
 Resistors                                    
 ---------                                                                                                    
-20   R1-R16,RD1,RLED,RP  1k                  2329885                                                  
-8    RLV1-RLV8,RP        4.7k                1470013RL                            
+19   R1-R16,RD1,RLED,RP  1k                  2329885                                                  
+9    RLV1-RLV8,RP        4.7k                1470013RL                            
 
 Capacitors
 ----------
