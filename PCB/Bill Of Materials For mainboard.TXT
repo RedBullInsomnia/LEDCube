@@ -1,0 +1,48 @@
+Bill Of Materials
+=================
+Design:   C:\Users\Hwk\Documents\GitHub\LEDCube\PCB\mainboard.DSN
+Doc. no.: <NONE>
+Revision: <NONE>
+Author:   <NONE>
+Created:  08/02/15
+Modified: 14/05/15
+
+QTY  PART-REFS           VALUE               CODE                          
+---  ---------           -----               ----                          
+Resistors                                    
+---------                                                                                                    
+20   R1-R16,RD1,RLED,RP  1k                  2329885                                                  
+8    RLV1-RLV8,RP        4.7k                1470013RL                            
+
+Capacitors
+----------
+9    C1-C8,CPIC          100n                2407345                              
+2    C9, C10             470u                1236664
+2    CX1,CX2             18p                 2329885            
+
+Integrated Circuits
+-------------------
+1    U1                  PIC18F4550          1660062                             
+
+Transistors
+-----------
+8    Q1,Q3,Q5,Q7,Q9,Q11, BC33725TA           1695754                            
+     Q13,Q15
+8    Q2,Q4,Q6,Q8,Q10,    FQU17P06            9846174                                           
+     Q12,Q14,Q16                             
+                                              
+Diodes                                        
+------                                         
+3    D1,D2,BLINK         LED                 2335730                                
+                                                
+Miscellaneous                                
+-------------                                            
+2    J1,J2               10073456-043LF      2215313     
+2    J3,JPW              CONN-SIL3           2013652                            
+1    JLVL                CONN-SIL8           2013652                           
+1    JPG                 CONN-SIL6           2013652                          
+1    JRESET              CONN-SIL2           2013652                         
+1    JUSB                AU-Y1007-R            
+8    T1-T8               TLC5916             1647814                              
+1    X1                  CRYSTAL             1842246                              
+
