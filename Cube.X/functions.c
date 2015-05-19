@@ -1,40 +1,15 @@
 #include "functions.h"
 #include <stdint.h>
 #include <spi.h>
-#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define _XTAL_FREQ 30000000
 
 void init() {
+
+    // Initiate the SPI
     initSpi();
-
-    // Interrupt priority
-    IPEN = 1; // Interrupt priority bit
-    GIE = 1; //enable Global interrupts (high priority as IPEN = 1)
-    GIEL = 1; //enable low priority interrupts
-
-
-    // configure timer 0
-    T0CON = 0b10011000; //activate the timer0 with the right parameters
-    TMR0IE = 1; //enable TMR0 overflow interrupts (INTCON PDF pg. 113)
-    TMR0IP = 1; // TMRO is a high priority interrupt ( bit 2 de INTCON 2)
-    resetTimer();
-
-    // Configure the external interrupt based on INT2 for Button 1
-    // page 100 et suivantes datasheet
-    
-    // Configure INT2 has an input
-    TRISBbits.RB2 = 1;
-
-    //RBPU = 0;
-    INT2IE = 1;
-    INT2IP = 0;
-    INT2IF = 0;
-    INTEDG2 = 0; // Interrupt on a falling edge ( bit 4 de INTCON 2)
-
-
 
     // Init random numbers
     srand(TMR0L);
@@ -74,16 +49,38 @@ void init() {
     // Init global variables
     resetCube();
     currentLevel = 0;
+
+     // Define interrupt priority
+    IPEN = 1; // Interrupt priority bit
+    GIE = 1; //enable Global interrupts (high priority as IPEN = 1)
+    GIEL = 1; //enable low priority interrupts
+
+    // Configure timer 0 for display interrupt
+    T0CON = 0b10011000; //activate the timer0 with the right parameters
+    TMR0IE = 1; //enable TMR0 overflow interrupts (INTCON PDF pg. 113)
+    TMR0IP = 1; // TMRO is a high priority interrupt ( bit 2 de INTCON 2)
+    resetTimer();
+
+    // Configure external interrupt for the button
+    INT2IE = 1;
+    INT2IP = 0;
+    INTEDG2 = 0; // Interrupt on a falling edge ( bit 4 de INTCON 2)
+    INT2IF = 0;
+
+    // Configure INT2 has an input
+    TRISBbits.RB2 = 1;
+    // Configure PIN RB3 as VDD and RB4 as GND for the button usage
+    TRISBbits.RB3 = 0; LATBbits.LATB3 = 1;
+    TRISBbits.RB4 = 0; LATBbits.LATB4 = 0;
+
 }
 
 void initSpi() {
     CloseSPI();
-    OpenSPI(SPI_FOSC_64, MODE_00, SMPMID);
+    OpenSPI(SPI_FOSC_4, MODE_00, SMPMID);
 }
 
 void resetTimer() {
-    //    TMR0L = 0x61;
-    //    TMR0H = 0xDB;
     TMR0L = 0x23;
     TMR0H = 0xCD;
     TMR0IF = 0; //TMR0 interrupt flag must be cleared in software to allow subsequent interrupts increment the counter variable by 1
@@ -91,15 +88,13 @@ void resetTimer() {
 
 void blink() {
     blinky = 1;
-    for (uint8_t i = 0; i < 255; i++)
-        __delay_ms(10);
+    delay_10ms(255);
     blinky = 0;
-    for (uint8_t i = 0; i < 255; i++)
-        __delay_ms(10);
+    delay_10ms(255);
 }
 
-void initBlinky(uint8_t length) {
-    for (uint8_t i = 0; i < length; i++)
+void blink_nb_times(uint8_t nb) {
+    for (uint8_t i = 0; i < nb; i++)
         blink();
 }
 
@@ -120,19 +115,13 @@ void disableLevels() {
     LATE &= 0b1100;
 }
 
-void enableLevels() {
-    LATA |= 0b00111111;
-    LATE |= 0b0011;
-}
-
 void sendByte(uint8_t byte, uint8_t latch) {
     LE = 0; // LE low
-
     WriteSPI(byte);
-
     if (latch > 0) {
         LE = 1; // LE high
-        //__delay_ms(10);
+        Nop();
+        Nop();
         LE = 0; // LE low; to activate latch
     }
 }
@@ -142,23 +131,11 @@ void selectLevel(uint8_t level) {
     disableLevels();
 
     // Wait a few cycles for the MOST to close
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
-    Nop();
+    Nop(); Nop(); Nop(); Nop(); Nop();
+    Nop(); Nop(); Nop(); Nop(); Nop();
+    Nop(); Nop(); Nop(); Nop(); Nop();
+    Nop(); Nop(); Nop(); Nop(); Nop();
+    Nop(); Nop(); Nop(); Nop(); Nop();
 
     // Then, activate the one you want
     switch (level) {
@@ -210,16 +187,9 @@ void sendLevel(uint8_t byte[8], uint8_t level) {
     // Latch and activate
     selectLevel(level);
     LE = 1; // LE high
+    Nop(); Nop();
     LE = 0; // LE low; to activate latch
     OE = 0; // enable output
-}
-
-void sendFrame(uint8_t byte[8][8]) {
-    uint8_t level = 1;
-    for (uint8_t i = 0; i < 8; i++) {
-        sendLevel(byte[i], level);
-        level++;
-    }
 }
 
 void delay_10ms(int multiplier)
@@ -248,9 +218,8 @@ void interrupt high_priority Timer0_ISR() {
 void interrupt low_priority pressedOnButton() {
     if (INT2IE && INT2IF) {
         blinky = 1;
-        // do something
         buttonPressed = 1;
-        //blinky = 0;
+        blinky = 0;
         INT2IF = 0;
     }
 }

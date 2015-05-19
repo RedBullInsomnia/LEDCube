@@ -31,6 +31,8 @@
 /* Blinky */
 #define blinky LATDbits.LATD5
 
+/* Button */
+
 
 /******************************************************************************/
 /* Global variables                                                           */
@@ -60,31 +62,63 @@ void initSpi();
  */
 void resetTimer();
 
+/*
+ * Blinks the debug LED on the board one time
+ */
 void blink();
 
-void initBlinky(uint8_t length);
+/*
+ * Blinks the debug Led on the board 'nb' times
+ */
+void blink_nb_times(uint8_t nb);
 
+/*
+ * Reset the whole cube (all bits to 0)
+ */
 void resetCube();
 
+/*
+ * Set the whole cube (all bits to 1)
+ */
 void setCube();
 
+/*
+ * Disable all the levels
+ */
 void disableLevels();
 
-void enableLevels();
-
+/*
+ * Send 1 byte over the SPI, 'single' is used to configure the latch
+ */
 void sendByte(uint8_t byte, uint8_t single);
 
+/*
+ * Disable all the levels (by security) and select the desired level
+ */
 void selectLevel(uint8_t level);
 
+/*
+ * Send one byte over the SPI, intended for a particular level
+ */
 void sendByteAndLevel(uint8_t byte, uint8_t single, uint8_t level);
 
+/*
+ * Send the whole level to be display over the SPI
+ */
 void sendLevel(uint8_t byte[8], uint8_t level);
 
-void sendFrame(uint8_t byte[8][8]);
-
+/*
+ * Creates a delay of about ('multiplier' x 10ms)
+ */
 void delay_10ms(int multiplier);
 
+/*
+ * Routine for the high priority interrupt
+ */
 void interrupt high_priority Timer0_ISR();
 
+/*
+ * Routine for the low priority interrupt
+ */
 void interrupt low_priority pressedOnButton();
 #endif	/* FUNCTIONS_H */

@@ -5,8 +5,6 @@
  * Created on 17 février 2015, 18:30
  */
 
-#include <p18cxxx.h>
-#include <delays.h>
 #include <xc.h>
 #include "functions.h"
 #include "animations.h"
@@ -17,42 +15,48 @@ void main(void) {
 
     /* Initialisation and start sequence */
     init();
-    //initBlinky(3);
 
-    resetCube();
-
-    
-    //cube_char('g',4);
-    
+    uint8_t rand_anim = 0;
 
     while(1)
     {
-        if(buttonPressed == 0){
-            blinky = 0;
-            edges();
-        }
-        else{
-            //blinky = 1;
-            setCube();
-            delay_10ms(500);
+        if (1 == buttonPressed)
+        {
             buttonPressed = 0;
+            rand_anim = (rand_anim + 1);
+            if (rand_anim > 4)
+                rand_anim = 0;
         }
-        
-        //snow();
-        
-//        delay_10ms(10);
-//        char text[] = "wingardium leviosaaaa";
-//        cube_string_to_front(text, 21);
 
-//        // Levels
-//        for(uint8_t l = 0; l < 8; l++)
-//        {
-//            // drivers
-//            for(uint8_t d = 0; d < 4; d++)
-//            {
-//                cube[l][d] = 0xFF;
-//            }
-//        }
+        switch(rand_anim) {
+            case 0: snow();
+                    delay_10ms(4);
+                    break;
+            case 1: resetCube();
+                    edges();
+                    delay_10ms(2);
+                    break;
+            case 2: resetCube();
+                    cube_string_to_front("abcdefghijklmnopqrstuvwxyz", 26);
+                    delay_10ms(2);
+                    break;
+            case 3: resetCube();
+                    cube_char('c', 255);
+                    rotate_90();
+                    delay_10ms(2);
+                    rotate_90();
+                    delay_10ms(2);
+                    rotate_90();
+                    delay_10ms(2);
+                    rotate_90();
+                    if(buttonPressed == 1)
+                        break;
+                    else
+                        delay_10ms(50);
+                    break;
+            case 4: setCube();
+                    break;
 
+        }
     }
 }

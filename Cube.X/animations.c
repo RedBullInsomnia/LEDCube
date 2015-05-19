@@ -1,75 +1,32 @@
 #include "animations.h"
 #include "functions.h"
 #define _XTAL_FREQ 30000000
-//
-//void cube_block_wipe( void )
-//{
-//    ;
-//}
-//void move_x_fwd(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
-//{
-//    ;
-//}
-//void cube_show_loop(uint8_t cycle)
-//{
-//    ;
-//}
-//void cubes_4( void )
-//{
-//    ;
-//}
-//
-//// Translation :
-//void move_z_fwd ( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
-//void move_z_rev ( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
-//void move_y_fwd( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
-//void move_y_rev( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
-//void move_x_fwd( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
-//void move_x_rev( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2 )
-//{
-//    ;
-//}
 
 /* Snow */
 void snow()
 {
-
     int rnd[4];
 
     for(uint8_t i = 0; i < 4 ; i++)
     {
         rnd[i] = rand();
-        rnd[i] = rnd[i]%8;
+        rnd[i] = rnd[i] % 8;
     }
 
     // Go down
     for(uint8_t i = 1; i<8; i++)
-        for(uint8_t j =0; j<8; j++)
+        for(uint8_t j = 0; j<8; j++)
             cube[i-1][j] = cube[i][j];
 
     // Generate new level
-    for(uint8_t j =0; j<8; j++)
+    for(uint8_t j = 0; j<8; j++)
         cube[7][j] = 0;
 
-    for(uint8_t i = 0; i < 4 ; i=1+2)
+    for(uint8_t i = 0; i < 4 ; i += 2)
         cube[7][rnd[i]] = 1 << rnd[i+1];
 }
 
+// Cube growing, shrinking and rotating
 void edges()
 {
     for(uint8_t index1 = 0 ; index1 < 7 ; index1++)
@@ -100,6 +57,8 @@ void edges()
                 {
                     if(d==0+index || d==7-index)
                         cube[l][d] = (1 << index) + (1 << (7-index));
+                    if(buttonPressed == 1)
+                        return;
                 }
             }
         delay_10ms(1);
@@ -109,6 +68,7 @@ void edges()
 
 }
 
+// Apply a rotation of 90°, clockwise
 void rotate_90()
 {
     uint8_t tmpLayer[8][8];
@@ -197,6 +157,8 @@ void rotate_90()
                     cube[l][d] += tmpLayer[d][p] << p;
             }
         }
+        if(buttonPressed == 1)
+            return;
         delay_10ms(1);
     }
 }
@@ -208,13 +170,16 @@ void cube_string_to_front(char *string, int size) {
         for (uint8_t i = 8; i > 0; i--) {
             resetCube();
             cube_char(*string, (1 << (i - 1)));
-            for (uint8_t j = 1; j < 7; j++)
-                __delay_ms(10);
+            if (1 == buttonPressed)
+                return;
+            else
+                delay_10ms(7);
         }
         string++;
     }
 }
 
+// Display a character
 void cube_char(char ch, uint8_t z) {
     switch (ch) {
         case ' ':

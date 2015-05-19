@@ -4,7 +4,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>system.h</itemPath>
       <itemPath>functions.h</itemPath>
       <itemPath>animations.h</itemPath>
     </logicalFolder>
@@ -17,8 +16,6 @@
                    projectFiles="true">
       <itemPath>mainp18.c</itemPath>
       <itemPath>configuration_bits.c</itemPath>
-      <itemPath>system.c</itemPath>
-      <itemPath>interrupts.c</itemPath>
       <itemPath>functions.c</itemPath>
       <itemPath>animations.c</itemPath>
     </logicalFolder>
@@ -38,7 +35,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>1.33</languageToolchainVersion>
+        <languageToolchainVersion>1.30</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -46,11 +43,8 @@
           <linkerLibItems>
           </linkerLibItems>
         </linkerTool>
-        <archiverTool>
-        </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
