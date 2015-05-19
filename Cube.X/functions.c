@@ -228,7 +228,7 @@ void delay_10ms(int multiplier)
         __delay_ms(10);
 }
 
-void interrupt Timer0_ISR() {
+void interrupt high_priority Timer0_ISR() {
     if (TMR0IE && TMR0IF) {
         resetTimer();
         //blinky = 1;
@@ -245,7 +245,7 @@ void interrupt Timer0_ISR() {
 }
 
 
-void interrupt pressedOnButton() {
+void interrupt low_priority pressedOnButton() {
     if (INT2IE && INT2IF) {
         blinky = 1;
         // do something

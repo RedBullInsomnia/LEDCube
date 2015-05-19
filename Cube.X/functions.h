@@ -84,7 +84,7 @@ void sendFrame(uint8_t byte[8][8]);
 
 void delay_10ms(int multiplier);
 
-void interrupt Timer0_ISR();
+void interrupt high_priority Timer0_ISR();
 
-void interrupt pressedOnButton();
+void interrupt low_priority pressedOnButton();
 #endif	/* FUNCTIONS_H */
