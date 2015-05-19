@@ -54,7 +54,6 @@ void init() {
     // Init global variables
     resetCube();
     currentLevel = 0;
-    irCount = 0;
 }
 
 void initSpi() {
@@ -63,10 +62,8 @@ void initSpi() {
 }
 
 void resetTimer() {
-    //    TMR0L = 0x61;
-    //    TMR0H = 0xDB;
-    TMR0L = 0xAD;
-    TMR0H = 0xF8;
+    TMR0L = 0x23;
+    TMR0H = 0xCD;
     TMR0IF = 0; //TMR0 interrupt flag must be cleared in software to allow subsequent interrupts increment the counter variable by 1
 }
 
@@ -212,24 +209,16 @@ void delay_10ms(int multiplier)
 void interrupt Timer0_ISR() {
     if (TMR0IE && TMR0IF) {
         resetTimer();
-        if (irCount == 4) {
-            blinky = 1;
 
-            sendLevel(cube[currentLevel], currentLevel);
+        blinky = 1;
 
-            if (currentLevel == 7)
-                currentLevel = 0;
-            else
-                currentLevel++;
+        sendLevel(cube[currentLevel], currentLevel);
 
-            blinky = 0;
-        } else if (irCount == 3) {
-            disableLevels();
-        }
-
-        if (irCount == 4)
-            irCount = 0;
+        if (currentLevel == 7)
+            currentLevel = 0;
         else
-            irCount++;
+            currentLevel++;
+
+        blinky = 0;
     }
 }

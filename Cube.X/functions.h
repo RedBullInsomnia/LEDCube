@@ -38,7 +38,6 @@
 
 uint8_t cube[8][8];
 uint8_t currentLevel;
-uint8_t irCount;
 
 /******************************************************************************/
 /* Function prototypes                                                        */

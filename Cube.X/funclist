@@ -1,20 +1,20 @@
-_init: CODE, 2986 0 88
-_selectLevel: CODE, 2858 0 128
+_init: CODE, 3034 0 80
+_selectLevel: CODE, 2818 0 128
 _rotate_90: CODE, 24 0 1798
-_Timer0_ISR: CODE, 8 0 2850
-_initSpi: CODE, 3342 0 26
-_OpenSPI: CODE, 3074 0 88
-i2_disableLevels: CODE, 3474 0 10
-_resetTimer: CODE, 3440 0 12
+_Timer0_ISR: CODE, 8 0 2810
+_initSpi: CODE, 3268 0 26
+_OpenSPI: CODE, 2946 0 88
+i2_disableLevels: CODE, 3424 0 10
+_resetTimer: CODE, 3390 0 12
 _edges: CODE, 1822 0 606
-_main: CODE, 3316 0 26
-_disableLevels: CODE, 3464 0 10
-__initialization: CODE, 3290 0 16
-_delay_10ms: CODE, 3240 0 50
-_srand: CODE, 3418 0 22
-_sendByte: CODE, 3394 0 24
-_resetCube: CODE, 3162 0 78
-i2_resetTimer: CODE, 3452 0 12
+_main: CODE, 3242 0 26
+_disableLevels: CODE, 3414 0 10
+__initialization: CODE, 3320 0 14
+_delay_10ms: CODE, 3192 0 50
+_srand: CODE, 3368 0 22
+_sendByte: CODE, 3344 0 24
+_resetCube: CODE, 3114 0 78
+i2_resetTimer: CODE, 3402 0 12
 _sendLevel: CODE, 2428 0 220
-_WriteSPI: CODE, 3368 0 26
-Total: 6090
+_WriteSPI: CODE, 3294 0 26
+Total: 6040

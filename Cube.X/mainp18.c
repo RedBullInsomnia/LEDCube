@@ -17,7 +17,6 @@ void main(void) {
 
     /* Initialisation and start sequence */
     init();
-    //initBlinky(3);
 
     resetCube();
 
