@@ -12,6 +12,16 @@
 #include <stdlib.h>
 #include <math.h>
 
+void go_front(uint8_t n);
+void go_back(uint8_t n);
+void go_right(uint8_t n);
+void go_left(uint8_t n);
+void go_up(uint8_t n);
+void go_down(uint8_t n);
+
+void moving_cube(uint8_t n);
+void flash();
+
 void snow();
 void edges();
 void rotate_90();

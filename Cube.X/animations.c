@@ -2,6 +2,158 @@
 #include "functions.h"
 #define _XTAL_FREQ 30000000
 
+
+void go_front(uint8_t n)
+{
+    for (uint8_t z=0 ; z<8 ; z++)
+    {
+        for (uint8_t y=0 ; y<8 ; y++)
+        {
+            cube[z][y] = cube[z][y] << n;
+        }
+    }
+}
+
+void go_back(uint8_t n)
+{
+    for (uint8_t z=0 ; z<8 ; z++)
+    {
+        for (uint8_t y=0 ; y<8 ; y++)
+        {
+            cube[z][y] = cube[z][y] << n;
+        }
+    }
+}
+
+void go_right(uint8_t n)
+{
+    for (uint8_t i=1 ; i<=n ; i++)
+    {
+        for (uint8_t z=0 ; z<8 ; z++)
+        {
+            for (uint8_t y=7 ; y>0 ; y--)
+            {
+                cube[z][y] = cube[z][y-1];
+            }
+            cube[z][0] = 0;
+        }
+    }
+}
+
+void go_left(uint8_t n)
+{
+    for (uint8_t i=1 ; i<=n ; i++)
+    {
+        for (uint8_t z=0 ; z<8 ; z++)
+        {
+            for (uint8_t y=0 ; y<7 ; y++)
+            {
+                cube[z][y] = cube[z][y+1];
+            }
+            cube[z][7] = 0;
+        }
+    }
+}
+
+void go_up(uint8_t n)
+{
+    for(uint8_t i = 1; i<=n ; i++)
+    {
+        for(uint8_t z = 7; z>0 ; z--)
+        {
+            for(uint8_t y = 0; y<8; y++)
+                cube[z][y] = cube[z-1][y];
+        }
+    }
+    for(uint8_t y = 0; y<8; y++)
+        cube[0][y] = 0;
+}
+
+void go_down(uint8_t n)
+{
+    for(uint8_t i = 1; i<=n ; i++)
+    {
+        for(uint8_t z = 0; z<7; z++)
+        {
+            for(uint8_t y = 0; y<8; y++)
+                cube[z][y] = cube[z+1][y];
+        }
+    }
+    for(uint8_t y = 0; y<8; y++)
+        cube[7][y] = 0;
+}
+
+void moving_cube(uint8_t n)
+{
+    for(uint8_t z=0 ; z<4 ; z+=3)
+    {
+        cube[z][0] = 0b00001111;
+        cube[z][1] = 0b00001001;
+        cube[z][2] = 0b00001001;
+        cube[z][3] = 0b00001111;
+    }
+    for(uint8_t z=1 ; z<3 ; z++)
+    {
+        cube[z][0] = 0b00001001;
+        cube[z][3] = 0b00001001;
+    }
+
+    for(uint8_t i=1 ; i<=n ; i++)
+    {
+        for(uint8_t step=0 ; step<32 ; step++)
+        {
+            if(buttonPressed == 1)
+                return;
+            delay_10ms(2);
+
+            if(step<4)
+                go_right(1);
+            else if(step<8)
+                go_up(1);
+            else if(step<12)
+                go_front(1);
+            else if(step<16)
+                go_down(1);
+            else if(step<20)
+                go_left(1);
+            else if(step<24)
+                go_up(1);
+            else if(step<28)
+                go_back(1);
+            else if(step<32)
+                go_down(1);
+        }
+    }
+
+}
+
+void flash()
+{
+    uint8_t copy[8][8];
+
+    for(uint8_t z=0 ; z<8 ; z++)
+        for(uint8_t y=0 ; y<8 ; y++)
+            copy[z][y] = cube[z][y];
+
+    for(uint8_t i=0 ; i<10; i++)
+    {
+        resetCube;
+        
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(1);
+
+        for(uint8_t z=0 ; z<8 ; z++)
+            for(uint8_t y=0 ; y<8 ; y++)
+                cube[z][y] = copy[z][y];
+
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(1);
+    }
+}
+
+
 /* Snow */
 void snow()
 {
@@ -14,13 +166,7 @@ void snow()
     }
 
     // Go down
-    for(uint8_t i = 1; i<8; i++)
-        for(uint8_t j = 0; j<8; j++)
-            cube[i-1][j] = cube[i][j];
-
-    // Generate new level
-    for(uint8_t j = 0; j<8; j++)
-        cube[7][j] = 0;
+    go_down(1);
 
     for(uint8_t i = 0; i < 4 ; i += 2)
         cube[7][rnd[i]] = 1 << rnd[i+1];
