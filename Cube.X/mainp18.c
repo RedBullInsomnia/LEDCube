@@ -18,13 +18,18 @@ void main(void) {
 
     uint8_t rand_anim = 0;
 
+    buttonPressed = 0;
+    while(buttonPressed == 0);
+    buttonPressed = 0;
+    countdown();
+
     while(1)
     {
         if (1 == buttonPressed)
         {
             buttonPressed = 0;
             rand_anim = (rand_anim + 1);
-            if (rand_anim > 4)
+            if (rand_anim > 5)
                 rand_anim = 0;
         }
 
@@ -55,6 +60,8 @@ void main(void) {
                         delay_10ms(50);
                     break;
             case 4: setCube();
+                    break;
+            case 5: moving_cube(5);
                     break;
 
         }

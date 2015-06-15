@@ -1,6 +1,10 @@
 #include "animations.h"
 #include "functions.h"
+#include <spi.h>
+
+
 #define _XTAL_FREQ 30000000
+
 
 
 void go_front(uint8_t n)
@@ -20,7 +24,7 @@ void go_back(uint8_t n)
     {
         for (uint8_t y=0 ; y<8 ; y++)
         {
-            cube[z][y] = cube[z][y] << n;
+            cube[z][y] = cube[z][y] >> n;
         }
     }
 }
@@ -88,14 +92,14 @@ void moving_cube(uint8_t n)
     for(uint8_t z=0 ; z<4 ; z+=3)
     {
         cube[z][0] = 0b00001111;
-        cube[z][1] = 0b00001001;
-        cube[z][2] = 0b00001001;
+        cube[z][1] = 0b00001111;
+        cube[z][2] = 0b00001111;
         cube[z][3] = 0b00001111;
     }
     for(uint8_t z=1 ; z<3 ; z++)
     {
-        cube[z][0] = 0b00001001;
-        cube[z][3] = 0b00001001;
+        cube[z][0] = 0b00001111;
+        cube[z][3] = 0b00001111;
     }
 
     for(uint8_t i=1 ; i<=n ; i++)
@@ -104,7 +108,7 @@ void moving_cube(uint8_t n)
         {
             if(buttonPressed == 1)
                 return;
-            delay_10ms(2);
+            delay_10ms(5);
 
             if(step<4)
                 go_right(1);
@@ -122,6 +126,7 @@ void moving_cube(uint8_t n)
                 go_back(1);
             else if(step<32)
                 go_down(1);
+
         }
     }
 
@@ -141,7 +146,7 @@ void flash()
         
         if(buttonPressed == 1)
             return;
-        delay_10ms(1);
+        __delay_ms(10);
 
         for(uint8_t z=0 ; z<8 ; z++)
             for(uint8_t y=0 ; y<8 ; y++)
@@ -149,10 +154,48 @@ void flash()
 
         if(buttonPressed == 1)
             return;
-        delay_10ms(1);
+        __delay_ms(10);
     }
 }
 
+void countdown()
+{
+    resetCube();
+    cube_char('3', 0b00001000);
+    delay_10ms(3);
+    for(uint8_t i=0 ; i<4 ; i++)
+    {
+        delay_10ms(3);
+        rotate_90();
+    }
+    delay_10ms(3);
+    resetCube();
+    cube_char('2', 0b00001000);
+    delay_10ms(3);
+    for(uint8_t i=0 ; i<4 ; i++)
+    {        
+        delay_10ms(3);
+        rotate_90();
+    }
+    delay_10ms(3);
+    resetCube();
+    cube_char('1', 0b00001000);
+    delay_10ms(3);
+    for(uint8_t i=0 ; i<4 ; i++)
+    {
+        delay_10ms(3);
+        rotate_90();
+    }
+    delay_10ms(3);
+    resetCube();
+    cube_char('0', 0b00001000);
+    delay_10ms(3);
+    for(uint8_t i=0 ; i<4 ; i++)
+    {
+        delay_10ms(3);
+        rotate_90();
+    }
+}
 
 /* Snow */
 void snow()

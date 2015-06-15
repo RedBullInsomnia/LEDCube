@@ -21,6 +21,7 @@ void go_down(uint8_t n);
 
 void moving_cube(uint8_t n);
 void flash();
+void countdown();
 
 void snow();
 void edges();
