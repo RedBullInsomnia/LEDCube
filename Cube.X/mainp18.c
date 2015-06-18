@@ -29,8 +29,9 @@ void main(void) {
         {
             buttonPressed = 0;
             rand_anim = (rand_anim + 1);
-            if (rand_anim > 5)
+            if (rand_anim > 9)
                 rand_anim = 0;
+            resetAnim = 1;
         }
 
         switch(rand_anim) {
@@ -45,24 +46,23 @@ void main(void) {
                     cube_string_to_front("abcdefghijklmnopqrstuvwxyz", 26);
                     delay_10ms(2);
                     break;
-            case 3: resetCube();
-                    cube_char('c', 255);
-                    rotate_90();
-                    delay_10ms(2);
-                    rotate_90();
-                    delay_10ms(2);
-                    rotate_90();
-                    delay_10ms(2);
-                    rotate_90();
-                    if(buttonPressed == 1)
-                        break;
-                    else
-                        delay_10ms(50);
+            case 3: setCube();
                     break;
-            case 4: setCube();
+            case 4: moving_cube(5,1);
                     break;
-            case 5: moving_cube(5);
+            case 5: moving_cube(5,0);
                     break;
+            case 6: snow_special();
+                    break;
+            case 7: resetCube();
+                    lateral_faces("led   cube ", 11);
+                    break;
+            case 8: resetCube();
+                    arrow('<');
+                    break;
+            case 9: movingPlanes();
+                    break;
+
 
         }
     }

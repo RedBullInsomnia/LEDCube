@@ -42,6 +42,8 @@ uint8_t cube[8][8];
 uint8_t currentLevel;
 
 uint8_t buttonPressed = 0;
+uint8_t resetAnim = 1;
+uint8_t z=0, y=0, x=0;
 
 /******************************************************************************/
 /* Function prototypes                                                        */

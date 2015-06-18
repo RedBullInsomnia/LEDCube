@@ -9,23 +9,35 @@
 
 void go_front(uint8_t n)
 {
-    for (uint8_t z=0 ; z<8 ; z++)
+    for (uint8_t i=1 ; i<=n ; i++)
     {
-        for (uint8_t y=0 ; y<8 ; y++)
+        for (uint8_t z=0 ; z<8 ; z++)
         {
-            cube[z][y] = cube[z][y] << n;
+            for (uint8_t y=0 ; y<8 ; y++)
+            {
+                cube[z][y] = cube[z][y] << 1;
+            }
         }
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
 }
 
 void go_back(uint8_t n)
 {
-    for (uint8_t z=0 ; z<8 ; z++)
+    for (uint8_t i=1 ; i<=n ; i++)
     {
-        for (uint8_t y=0 ; y<8 ; y++)
+        for (uint8_t z=0 ; z<8 ; z++)
         {
-            cube[z][y] = cube[z][y] >> n;
+            for (uint8_t y=0 ; y<8 ; y++)
+            {
+                cube[z][y] = cube[z][y] >> 1;
+            }
         }
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
 }
 
@@ -41,6 +53,9 @@ void go_right(uint8_t n)
             }
             cube[z][0] = 0;
         }
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
 }
 
@@ -56,6 +71,9 @@ void go_left(uint8_t n)
             }
             cube[z][7] = 0;
         }
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
 }
 
@@ -68,9 +86,12 @@ void go_up(uint8_t n)
             for(uint8_t y = 0; y<8; y++)
                 cube[z][y] = cube[z-1][y];
         }
+        for(uint8_t y = 0; y<8; y++)
+            cube[0][y] = 0;
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
-    for(uint8_t y = 0; y<8; y++)
-        cube[0][y] = 0;
 }
 
 void go_down(uint8_t n)
@@ -82,26 +103,31 @@ void go_down(uint8_t n)
             for(uint8_t y = 0; y<8; y++)
                 cube[z][y] = cube[z+1][y];
         }
+        for(uint8_t y = 0; y<8; y++)
+            cube[7][y] = 0;
+        if(buttonPressed == 1)
+            return;
+        delay_10ms(5);
     }
-    for(uint8_t y = 0; y<8; y++)
-        cube[7][y] = 0;
 }
 
-void moving_cube(uint8_t n)
+void moving_cube(uint8_t n, uint8_t fixed)
 {
-    for(uint8_t z=0 ; z<4 ; z+=3)
+    if(fixed == 1)
     {
-        cube[z][0] = 0b00001111;
-        cube[z][1] = 0b00001111;
-        cube[z][2] = 0b00001111;
-        cube[z][3] = 0b00001111;
-    }
-    for(uint8_t z=1 ; z<3 ; z++)
-    {
-        cube[z][0] = 0b00001111;
-        cube[z][3] = 0b00001111;
+        resetCube();
+        for(uint8_t z=0 ; z<4 ; z++)
+        {
+            cube[z][0] = 0b00001111;
+            cube[z][1] = 0b00001111;
+            cube[z][2] = 0b00001111;
+            cube[z][3] = 0b00001111;
+        }
+        z=0, y=0, x=0;
     }
 
+    uint8_t direction = 0, step_size = 0;
+    
     for(uint8_t i=1 ; i<=n ; i++)
     {
         for(uint8_t step=0 ; step<32 ; step++)
@@ -110,25 +136,224 @@ void moving_cube(uint8_t n)
                 return;
             delay_10ms(5);
 
-            if(step<4)
-                go_right(1);
-            else if(step<8)
-                go_up(1);
-            else if(step<12)
-                go_front(1);
-            else if(step<16)
-                go_down(1);
-            else if(step<20)
-                go_left(1);
-            else if(step<24)
-                go_up(1);
-            else if(step<28)
-                go_back(1);
-            else if(step<32)
-                go_down(1);
-
+            
+            if(fixed == 0)
+            {
+                step_size = rand() % 4 + 1;
+                direction = rand() % 6;
+                
+                switch(direction)
+                {
+                    case 0:
+                        if(x<5-step_size)
+                        {
+                            go_front(step_size);
+                            x += step_size;
+                        }
+                        else
+                        {
+                            go_front(4-x);
+                            x = 4;
+                        }
+                        break;
+                    case 1:
+                        if(x>step_size-1)
+                        {
+                            go_back(step_size);
+                            x -= step_size;
+                        }
+                        else
+                        {
+                            go_back(x);
+                            x = 0;
+                        }
+                        break;
+                    case 2:
+                        if(y<5-step_size)
+                        {
+                            go_right(step_size);
+                            y += step_size;
+                        }
+                        else
+                        {
+                            go_right(4-y);
+                            y = 4;
+                        }
+                        break;
+                    case 3:
+                        if(y>step_size-1)
+                        {
+                            go_left(step_size);
+                            y -= step_size;
+                        }
+                        else
+                        {
+                            go_left(y);
+                            y = 0;
+                        }
+                        break;
+                    case 4:
+                        if(z<5-step_size)
+                        {
+                            go_up(step_size);
+                            z += step_size;
+                        }
+                        else
+                        {
+                            go_up(4-z);
+                            z = 4;
+                        }
+                        break;
+                    case 5:
+                        if(z>step_size-1)
+                        {
+                            go_down(step_size);
+                            z -= step_size;
+                        }
+                        else
+                        {
+                            go_down(z);
+                            z = 0;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                if(step<4){
+                    go_right(1);
+                    y ++;
+                }
+                else if(step<8){
+                    go_up(1);
+                    z++;
+                }
+                else if(step<12){
+                    go_front(1);
+                    x++;
+                }
+                else if(step<16){
+                    go_down(1);
+                    z--;
+                }
+                else if(step<20){
+                    go_left(1);
+                    y--;
+                }
+                else if(step<24){
+                    go_up(1);
+                    z++;
+                }
+                else if(step<28){
+                    go_back(1);
+                    x--;
+                }
+                else if(step<32){
+                    go_down(1);
+                    z--;
+                }
+            }
+            
         }
     }
+
+}
+
+void snow_special()
+{
+    uint8_t rnd[4];
+
+    if(resetAnim == 1)
+    {
+        resetCube();
+        resetAnim = 0;
+    }
+
+    for(uint8_t i = 0; i < 4 ; i++)
+    {
+        rnd[i] = rand() % 8;
+    }
+    // Go down
+    cube[7][rnd[0]] = 1 << rnd[1];
+    go_downstop(rnd[0], rnd[1]);
+}
+void go_downstop(uint8_t driver, uint8_t column)
+{
+    uint8_t mask;
+    for (int8_t i = 6; i >= 0; --i)
+    {
+        mask = 1;
+        mask = mask << column;
+        if (1 > (cube[i][driver]&mask))
+        {
+            cube[i][driver] += (cube[i+1][driver]&mask);
+            cube[i+1][driver] -= mask;
+            if(buttonPressed == 1)
+                return;
+            delay_10ms(5);
+        }
+    }
+}
+
+void lateral_faces(char* mySequence , int size)
+{
+    for(uint8_t i = 0; i < size+3; ++i)
+    {
+        if(i<size)
+            cube_char( mySequence[i], 128);
+
+        if(buttonPressed == 1)
+                return;
+        delay_10ms(50);
+
+        // We need to delete the letter that has already done all the lateral faces
+        for(uint8_t z = 0; z < 8; ++z){
+            cube[z][7] = 0b00000000;
+        }
+        rotate_90();
+    }
+}
+void arrow(char mySequence)
+{
+    cube_char( mySequence, 128);
+    for(uint8_t i = 0; i < 8; ++i)
+    {
+        if(buttonPressed == 1)
+                return;
+        delay_10ms(1);
+
+        rotate_90();
+    }
+}
+
+void movingPlanes()
+{
+    resetCube();
+    for(uint8_t z=0 ; z<8 ; ++z)
+    {
+        for(uint8_t y=0 ; y<8 ; ++y)
+        {
+            cube[z][y] = 0b00000001;
+        }
+    }
+    if(buttonPressed == 1)
+            return;
+    go_front(7);
+    if(buttonPressed == 1)
+            return;
+    go_back(7);
+    
+    for(uint8_t z=0 ; z<8 ; ++z)
+    {
+        cube[z][0] = 0b11111111;
+    }
+    if(buttonPressed == 1)
+            return;
+    go_right(7);
+    if(buttonPressed == 1)
+            return;
+    go_left(7);
+    
 
 }
 
@@ -162,38 +387,41 @@ void countdown()
 {
     resetCube();
     cube_char('3', 0b00001000);
-    delay_10ms(3);
+    delay_10ms(100);
     for(uint8_t i=0 ; i<4 ; i++)
     {
-        delay_10ms(3);
         rotate_90();
+        delay_10ms(3);
     }
-    delay_10ms(3);
+    delay_10ms(10);
     resetCube();
+    delay_10ms(10);
     cube_char('2', 0b00001000);
-    delay_10ms(3);
+    delay_10ms(100);
     for(uint8_t i=0 ; i<4 ; i++)
     {        
-        delay_10ms(3);
         rotate_90();
+        delay_10ms(3);
     }
-    delay_10ms(3);
+    delay_10ms(10);
     resetCube();
+    delay_10ms(10);
     cube_char('1', 0b00001000);
-    delay_10ms(3);
+    delay_10ms(100);
     for(uint8_t i=0 ; i<4 ; i++)
     {
-        delay_10ms(3);
         rotate_90();
+        delay_10ms(3);
     }
-    delay_10ms(3);
+    delay_10ms(10);
     resetCube();
+    delay_10ms(10);
     cube_char('0', 0b00001000);
-    delay_10ms(3);
+    delay_10ms(100);
     for(uint8_t i=0 ; i<4 ; i++)
     {
-        delay_10ms(3);
         rotate_90();
+        delay_10ms(3);
     }
 }
 
@@ -204,8 +432,7 @@ void snow()
 
     for(uint8_t i = 0; i < 4 ; i++)
     {
-        rnd[i] = rand();
-        rnd[i] = rnd[i] % 8;
+        rnd[i] = rand() %8;
     }
 
     // Go down
@@ -372,7 +599,7 @@ void cube_string_to_front(char *string, int size) {
 void cube_char(char ch, uint8_t z) {
     switch (ch) {
         case ' ':
-            resetCube();
+            
             break;
         case '0':
             cube[0][2] |= z;
@@ -396,12 +623,15 @@ void cube_char(char ch, uint8_t z) {
             cube[6][4] |= z;
             break;
         case '1':
+            cube[0][1] |= z;
             cube[0][2] |= z;
             cube[0][3] |= z;
             cube[0][4] |= z;
+            cube[0][5] |= z;
             cube[1][3] |= z;
             cube[2][3] |= z;
             cube[3][3] |= z;
+            cube[4][1] |= z;
             cube[4][3] |= z;
             cube[5][2] |= z;
             cube[5][3] |= z;
@@ -596,6 +826,32 @@ void cube_char(char ch, uint8_t z) {
             cube[5][4] |= z;
             cube[6][2] |= z;
             cube[6][3] |= z;
+            break;
+        case '<':
+            cube[0][4] |= z;
+            cube[0][5] |= z;
+            cube[0][6] |= z;
+            cube[1][3] |= z;
+            cube[1][4] |= z;
+            cube[1][5] |= z;
+            cube[2][1] |= z;
+            cube[2][2] |= z;
+            cube[2][3] |= z;
+            cube[3][0] |= z;
+            cube[3][1] |= z;
+            cube[3][2] |= z;
+            cube[4][0] |= z;
+            cube[4][1] |= z;
+            cube[4][2] |= z;
+            cube[5][1] |= z;
+            cube[5][2] |= z;
+            cube[5][3] |= z;
+            cube[6][3] |= z;
+            cube[6][4] |= z;
+            cube[6][5] |= z;
+            cube[7][4] |= z;
+            cube[7][5] |= z;
+            cube[7][6] |= z;
             break;
         case 'a':
             cube[0][1] |= z;

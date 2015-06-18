@@ -19,7 +19,12 @@ void go_left(uint8_t n);
 void go_up(uint8_t n);
 void go_down(uint8_t n);
 
-void moving_cube(uint8_t n);
+void moving_cube(uint8_t n, uint8_t fixed);
+void snow_special();
+void go_downstop(uint8_t driver, uint8_t column);
+void lateral_faces( char* mySequence , int size);
+void arrow(char mySequence);
+void movingPlanes();
 void flash();
 void countdown();
 
